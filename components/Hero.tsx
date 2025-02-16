@@ -13,13 +13,14 @@ const HeroSection = ({ index }: { index: number }) => {
 
   return (
     <div
-      className={`relative ${index === 0 ? "h-[70vh]" : "h-[40vh]"} flex items-center`}
+      className={`relative ${index === 0 ? "h-[70vh]" : "h-[40vh]"} `}
       style={{
-        backgroundImage: `url(${imageUrl})`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${imageUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center"
       }}
     >
+      <div className="bg-greenCover/65 w-full h-full flex items-center">
       <div className="container mx-auto px-4 pt-20">
         <div className="max-w-4xl mx-auto text-center">
           <motion.h1
@@ -50,6 +51,7 @@ const HeroSection = ({ index }: { index: number }) => {
             }
         </div>
 
+      </div>
       </div>
     </div>
   );
