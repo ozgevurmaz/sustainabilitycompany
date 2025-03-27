@@ -6,8 +6,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
-import HeroSection from "@/components/Hero";
-import { dummyPosts } from "@/lib/constant/pages";
+import HeroSection from "@/components/client/Hero";
+import { dummyPosts } from "@/lib/constant";
 
 export default function Blog() {
     const [posts, setPosts] = useState(dummyPosts);

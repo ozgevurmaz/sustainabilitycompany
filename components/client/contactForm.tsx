@@ -24,7 +24,7 @@ const ContactForm = () => {
     const isContactPage = pathname === "/contact";
     return (
 
-        <div className="container mx-auto px-4 pb-20">
+        <div className="container mx-auto pb-20">
             <div className={`${isContactPage ? "max-w-2xl" : ""} mx-auto bg-white p-8 shadow-lg rounded-lg`}>
                 {submitted ? (
                     <div className="text-center text-green-700 text-lg font-semibold">

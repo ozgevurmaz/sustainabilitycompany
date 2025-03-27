@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { sections } from "@/lib/constant/pages";
+import { sections } from "@/lib/constant";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 

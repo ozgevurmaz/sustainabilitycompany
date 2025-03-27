@@ -1,22 +1,26 @@
 import React from 'react'
-import { Card, CardContent } from './ui/card'
-import { services } from '@/lib/constant/pages'
+import { Card, CardContent } from '../ui/card'
 import { usePathname, useRouter } from 'next/navigation'
+import { ServicesType } from '@/lib/types/types'
 
-const ServicesSection = () => {
+interface ServicesSectionProps {
+    services: ServicesType[];
+  }
+
+const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) => {
     const pathname = usePathname();
     const router = useRouter();
 
     const isServicesPage = pathname === "/services"
     return (
-        <section className={`${isServicesPage ? "bg-transparent py-10" : "bg-gray-900 py-20"}`}>
+        <section className={`${isServicesPage ? "bg-transparent py-10" : "bg-green-100 py-20"}`}>
             <div className="container mx-auto px-4">
-                <h2 className={`text-3xl md:text-4xl font-bold ${isServicesPage ? "text-gray-900" : "text-white"} text-center mb-12`}>Our Services</h2>
+                <h2 className={`text-3xl md:text-4xl font-bold "text-gray-900"  text-center mb-12`}>Our Services</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {services.map((service, index) => (
+                    {services && services.map((service, index) => (
                         <Card
                             key={index}
-                            className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300"
+                            className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300 hover:scale-[102%]"
                             onClick={()=>router.push(`/services/${service.id}`)}
                         >
                             <CardContent className="p-6">

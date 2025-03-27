@@ -1,4 +1,5 @@
-import { Leaf, Droplet, Sun, Building } from "lucide-react";
+import { AlertCircle, ArrowLeft, Battery, Building, Car, Droplet, Earth, Edit2, Flower2, Globe, Leaf, Lightbulb, Recycle, Sprout, Sun, Trash2, Trees, Waves, Wind, Zap } from "lucide-react";
+
 import { HeroSectionType, ServicesType } from "../types/types";
 
 export const dummyPosts = [
@@ -6,7 +7,7 @@ export const dummyPosts = [
         _id: "1",
         title: "Understanding Carbon Footprint",
         excerpt: "Learn how carbon footprint affects the environment and what you can do to reduce it.",
-        image: "/images/carbon-footprint.jpg",
+        image: "/images/carbonfootprint.jpg",
         slug: "understanding-carbon-footprint",
         readTime: "5 min read",
     },
@@ -14,7 +15,7 @@ export const dummyPosts = [
         _id: "2",
         title: "Water Conservation Tips",
         excerpt: "Simple and effective ways to conserve water and reduce wastage.",
-        image: "/images/water-conservation.jpg",
+        image: "/images/waterfootprint.jpg",
         slug: "water-conservation-tips",
         readTime: "4 min read",
     },
@@ -22,7 +23,7 @@ export const dummyPosts = [
         _id: "3",
         title: "The Future of Renewable Energy",
         excerpt: "Exploring the latest innovations in solar and wind energy.",
-        image: "/images/renewable-energy.jpg",
+        image: "/images/sustainableenergy.jpg",
         slug: "future-of-renewable-energy",
         readTime: "6 min read",
     },
@@ -134,3 +135,38 @@ export const navItems = [
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
 ];
+
+export const ICON_OPTIONS = [
+    { name: "Leaf", component: Leaf },
+    { name: "Droplet", component: Droplet },
+    { name: "Sun", component: Sun },
+    { name: "Building", component: Building },
+    { name: "Recycle", component: Recycle },
+    { name: "Trees", component: Trees },
+    { name: "Globe", component: Globe },
+    { name: "Wind", component: Wind },
+    { name: "Waves", component: Waves },
+    { name: "Energy", component: Zap },
+    { name: "Battery", component: Battery },
+    { name: "Flower", component: Flower2 },
+    { name: "Earth", component: Earth },
+    { name: "ElectricCar", component: Car },
+    { name: "Lightbulb", component: Lightbulb },
+    { name: "Sprout", component: Sprout },
+  ] as const
+  export const COLOR_OPTIONS = [
+    { value: "bg-green-100", label: "Green" },
+    { value: "bg-green-200", label: "Light Green" },
+    { value: "bg-blue-100", label: "Blue" },
+    { value: "bg-blue-200", label: "Sky Blue" },
+    { value: "bg-yellow-100", label: "Yellow" },
+    { value: "bg-yellow-200", label: "Light Yellow" },
+    { value: "bg-purple-100", label: "Purple" },
+    { value: "bg-purple-200", label: "Lavender" },
+    { value: "bg-orange-100", label: "Peach" },
+    { value: "bg-orange-200", label: "Coral" },
+    { value: "bg-red-100", label: "Light Red" },
+    { value: "bg-red-200", label: "Rose" },
+    { value: "bg-gray-100", label: "Light Gray" },
+    { value: "bg-gray-200", label: "Cool Gray" },
+  ] as const;

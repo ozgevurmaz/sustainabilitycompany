@@ -6,9 +6,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Leaf, Droplet, Sun, Building } from "lucide-react";
-import HeroSection from "@/components/Hero";
-import { dummyPosts, services } from "@/lib/constant/pages";
-import ServicesSection from "@/components/servicesSection";
+import HeroSection from "@/components/client/Hero";
+import { dummyPosts, services } from "@/lib/constant";
+import ServicesSection from "@/components/client/servicesSection";
 
 
 export default function Home() {
@@ -34,7 +34,8 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-    <ServicesSection/>
+      <ServicesSection services={services} />
+
 
       {/* Blog Section */}
       <section className="py-20 bg-white">

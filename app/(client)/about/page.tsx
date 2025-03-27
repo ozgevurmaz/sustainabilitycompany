@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import HeroSection from "@/components/Hero";
+import HeroSection from "@/components/client/Hero";
 import { useRouter } from "next/navigation";
 
 export default function About() {

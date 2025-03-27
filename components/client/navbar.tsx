@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { navItems } from '@/lib/constant/pages';
+import { navItems } from '@/lib/constant';
 
 const Navbar = () => {
 const pathname = usePathname()

@@ -1,5 +1,5 @@
 import { ComponentType } from "react";
-import { LucideProps } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 export type HeroSectionType = {
     title: string;
@@ -22,6 +22,6 @@ export type ServicesType = {
     importance: string;
     benefits: string[];
     imageUrl: string;
-    icon: ComponentType<LucideProps>;
+    icon: LucideIcon;
     color: string;
 }
