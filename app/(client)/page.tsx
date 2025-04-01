@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Leaf, Droplet, Sun, Building } from "lucide-react";
 import HeroSection from "@/components/client/Hero";
-import { dummyPosts, services } from "@/lib/constant";
+import { dummyPosts, dummyServices } from "@/lib/constant";
 import ServicesSection from "@/components/client/servicesSection";
 
 
@@ -34,7 +34,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <ServicesSection services={services} />
+      <ServicesSection services={dummyServices} />
 
 
       {/* Blog Section */}

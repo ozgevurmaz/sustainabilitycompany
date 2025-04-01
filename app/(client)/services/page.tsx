@@ -2,7 +2,7 @@
 
 import ServicesSection from "@/components/client/servicesSection";
 import HeroSection from "@/components/client/Hero";
-import { services } from "@/lib/constant";
+import { dummyServices } from "@/lib/constant";
 
 export default function Services() {
   return (
@@ -10,7 +10,7 @@ export default function Services() {
       <HeroSection index={3} /> 
 
       <div className="container mx-auto px-4 py-20">
-        <ServicesSection services={services}/>
+        <ServicesSection services={dummyServices}/>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
-import { services } from "@/lib/constant";
+import { dummyServices } from "@/lib/constant";
 import { ServicesType } from "@/lib/types/types";
 import ContactForm from "@/components/client/contactForm";
 import { ArrowLeft, Check } from "lucide-react";
@@ -16,7 +16,7 @@ export default function ServicePage() {
 
     useEffect(() => {
         if (params?.serviceId) {
-            const foundService = services.find((s) => s.id === params.serviceId);
+            const foundService = dummyServices.find((s) => s.id === params.serviceId);
             setService(foundService || null);
         }
     }, [params?.serviceId]);
@@ -91,8 +91,8 @@ export default function ServicePage() {
                     </div>
 
                     {/* Benefits Section */}
-                    <div className={`${service.color} rounded-xl p-8`}>
-                        <h2 className="text-2xl font-semibold text-green-900 mb-4">
+                    <div className={`${service.color} rounded-xl p-8 text-white`}>
+                        <h2 className="text-2xl font-semibold  mb-4">
                             Key Benefits
                         </h2>
                         <div className="space-y-4">
@@ -104,8 +104,8 @@ export default function ServicePage() {
                                     transition={{ delay: 0.1 * index }}
                                     className="flex items-start space-x-3"
                                 >
-                                    <Check className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
-                                    <p className="text-gray-700">{benefit}</p>
+                                    <Check className="w-5 h-5  mt-1 flex-shrink-0" />
+                                    <p className="text-white">{benefit}</p>
                                 </motion.div>
                             ))}
                         </div>

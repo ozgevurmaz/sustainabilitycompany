@@ -2,12 +2,6 @@ import mongoose from "mongoose";
 
 let isConnection: boolean = false;
 
-const MONGODB_URL = process.env.MONGODB_URL || "";
-
-if (!MONGODB_URL) {
-  throw new Error("MONGODB_URI is not defined in .env file");
-}
-
 export const connectToDB = async (): Promise<void> => {
   mongoose.set("strictQuery", true);
 
@@ -17,9 +11,11 @@ export const connectToDB = async (): Promise<void> => {
   }
 
   try {
-    mongoose.connect(MONGODB_URL || "", {
+    mongoose.connect(process.env.MONGODB_URL || "", {
       dbName: "FutureFootprint",
     });
+    isConnection = true;
+    console.log("mongoDB is connected")
   } catch (error) {
     console.log(error);
   }
