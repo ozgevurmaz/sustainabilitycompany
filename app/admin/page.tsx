@@ -182,7 +182,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs for Dashboard Content */}
-        <Tabs defaultValue="overview" className="mb-8">
+        <Tabs defaultValue="recent" className="mb-8">
           <TabsList className="grid grid-cols-5 mb-8">
             <TabsTrigger value="recent">Recent Activities</TabsTrigger>
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="engagement">Engagement</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* Recent Tab */}
           <TabsContent value="recent">
             {/* Recent Activity Panel */}
             <Card className="mb-8">
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Monthly Visitors Chart */}
+          {/* Overview Chart */}
           <TabsContent value="overview">
             <Card className="mb-8">
               <CardHeader>
@@ -421,18 +421,6 @@ export default function AdminDashboard() {
                     </p>
                     <Link href="/admin/blog/new" className="text-sm font-medium text-blue-700 hover:text-blue-900">
                       Create New Blog Post →
-                    </Link>
-                  </div>
-                  <div className="p-4 border border-green-200 rounded-lg bg-green-50">
-                    <h4 className="font-medium text-green-800 mb-2 flex items-center">
-                      <Settings className="h-5 w-5 mr-2" />
-                      Service Highlight Recommendation
-                    </h4>
-                    <p className="text-sm text-green-700 mb-3">
-                      "Energy Audit" is your most viewed service. Consider featuring it more prominently on the homepage and creating additional content that explains its benefits in detail.
-                    </p>
-                    <Link href="/admin/services" className="text-sm font-medium text-green-700 hover:text-green-900">
-                      Update Services →
                     </Link>
                   </div>
                   <div className="p-4 border border-purple-200 rounded-lg bg-purple-50">

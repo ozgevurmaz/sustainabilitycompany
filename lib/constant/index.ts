@@ -1,33 +1,117 @@
 import { AlertCircle, ArrowLeft, Battery, Building, Car, Droplet, Earth, Edit2, Flower2, Globe, Leaf, Lightbulb, Recycle, Sprout, Sun, Trash2, Trees, Waves, Wind, Zap } from "lucide-react";
 
-import { BlogFormDataType, BlogPostType, CategoryType, HeroSectionType, ServicesType, TestimonialType } from "../types/types";
+import { BlogPostType, BlogType, CategoryType, HeroSectionType, ServicesType, TestimonialType } from "../types/types";
 
-export const dummyPosts = [
+export const dummyPosts: BlogType[] = [
     {
         _id: "1",
         title: "Understanding Carbon Footprint",
-        excerpt: "Learn how carbon footprint affects the environment and what you can do to reduce it.",
-        image: "/images/carbonfootprint.jpg",
+        excerpt: "Learn how carbon footprint affects the environment and what you can do to reduce it in your daily life. Small changes can make a big difference.",
+        imageUrl: "/images/carbonfootprint.jpg",
         slug: "understanding-carbon-footprint",
         readTime: "5 min read",
+        category: ["Sustainable Living"],
+        date: "March 28, 2025"
     },
     {
         _id: "2",
         title: "Water Conservation Tips",
-        excerpt: "Simple and effective ways to conserve water and reduce wastage.",
-        image: "/images/waterfootprint.jpg",
+        excerpt: "Simple and effective ways to conserve water and reduce wastage in your home, garden and community.",
+        imageUrl: "/images/waterfootprint.jpg",
         slug: "water-conservation-tips",
         readTime: "4 min read",
+        category: ["Zero Waste"],
+        date: "March 22, 2025"
     },
     {
         _id: "3",
         title: "The Future of Renewable Energy",
-        excerpt: "Exploring the latest innovations in solar and wind energy.",
-        image: "/images/sustainableenergy.jpg",
+        excerpt: "Exploring the latest innovations in solar and wind energy and how they are reshaping our energy landscape.",
+        imageUrl: "/images/sustainableenergy.jpg",
         slug: "future-of-renewable-energy",
         readTime: "6 min read",
+        category: ["Renewable Energy"],
+        date: "March 15, 2025"
     },
+    {
+        _id: "4",
+        title: "Sustainable Fashion: Beyond the Trends",
+        excerpt: "How sustainable fashion is changing the industry and practical tips for building an eco-friendly wardrobe.",
+        imageUrl: "/images/sustainablefashion.jpg",
+        slug: "sustainable-fashion-beyond-trends",
+        readTime: "7 min read",
+        category: ["Sustainable Living"],
+        date: "March 10, 2025"
+    },
+    {
+        _id: "5",
+        title: "Corporate Sustainability Success: Green Office Initiative",
+        excerpt: "Case study of how a mid-sized tech company reduced their environmental impact by 40% through simple office policies.",
+        imageUrl: "/images/greenoffice.jpg",
+        slug: "corporate-sustainability-success",
+        readTime: "8 min read",
+        category: ["Case Studies"],
+        date: "March 5, 2025"
+    },
+    {
+        _id: "6",
+        title: "Community Garden Transformation",
+        excerpt: "How an urban neighborhood converted vacant lots into thriving community gardens with impressive environmental benefits.",
+        imageUrl: "/images/communitygarden.jpg",
+        slug: "community-garden-transformation",
+        readTime: "6 min read",
+        category: ["Case Studies"],
+        date: "February 28, 2025"
+    },
+    {
+        _id: "7",
+        title: "Zero-Waste Home Challenge Results",
+        excerpt: "Real-world results from families who took our 30-day zero-waste challenge, including challenges and measurable outcomes.",
+        imageUrl: "/images/zerowastehome.jpg",
+        slug: "zero-waste-home-challenge-results",
+        readTime: "5 min read",
+        category: ["Zero Waste"],
+        date: "February 20, 2025"
+    },
+    {
+        _id: "8",
+        title: "Climate Policy Changes: What You Need to Know",
+        excerpt: "Summary of recent climate policy developments and how they might affect individuals and businesses.",
+        imageUrl: "/images/climatepolicy.jpg",
+        slug: "climate-policy-changes",
+        readTime: "9 min read",
+        category: ["Climate Action"],
+        date: "February 15, 2025"
+    },
+    {
+        _id: "9",
+        title: "Eco-Friendly Product Reviews: Home Cleaning",
+        excerpt: "Honest reviews of popular eco-friendly home cleaning products that actually work and are truly sustainable.",
+        imageUrl: "/images/ecocleaners.jpg",
+        slug: "eco-friendly-product-reviews-cleaning",
+        readTime: "7 min read",
+        category: ["Eco-Friendly Products"],
+        date: "February 8, 2025"
+    }
 ];
+
+export const COLOR_OPTIONS = [
+    { label: "Green", hex: "#dcfce7" },
+    { label: "Light Green", hex: "#bbf7d0" },
+    { label: "Blue", hex: "#dbeafe" },
+    { label: "Sky Blue", hex: "#bfdbfe" },
+    { label: "Yellow", hex: "#fef9c3" },
+    { label: "Light Yellow", hex: "#fef08a" },
+    { label: "Purple", hex: "#f3e8ff" },
+    { label: "Lavender", hex: "#e9d5ff" },
+    { label: "Peach", hex: "#ffedd5" },
+    { label: "Coral", hex: "#fed7aa" },
+    { label: "Light Red", hex: "#fee2e2" },
+    { label: "Rose", hex: "#fecaca" },
+    { label: "Light Gray", hex: "#f3f4f6" },
+    { label: "Cool Gray", hex: "#e5e7eb" },
+] as const;
+
 
 export const dummyServices: ServicesType[] = [{
     id: "sustainability-audits",
@@ -42,9 +126,9 @@ export const dummyServices: ServicesType[] = [{
         "Waste management review",
         "Detailed report with recommendations"
     ],
-    imageUrl: "/services/sustainability-audit.jpg",
+    imageUrl: "/images/sustainability.jpg",
     icon: Leaf,
-    color: "bg-green-500",
+    color: `${COLOR_OPTIONS[7].hex}`,
 },
 {
     id: "green-building-consultation",
@@ -59,9 +143,9 @@ export const dummyServices: ServicesType[] = [{
         "Certification support (LEED, BREEAM)",
         "ROI analysis for green features"
     ],
-    imageUrl: "/services/green-building.jpg",
+    imageUrl: "/images/sustainablitystrategies.jpg",
     icon: Building,
-    color: "bg-blue-500",
+    color: `${COLOR_OPTIONS[1].hex}`,
 },
 {
     id: "renewable-energy-implementation",
@@ -76,9 +160,9 @@ export const dummyServices: ServicesType[] = [{
         "Installation project management",
         "Performance monitoring setup"
     ],
-    imageUrl: "/services/renewable-energy.jpg",
+    imageUrl: "/images/sustainableenergy.jpg",
     icon: Sun,
-    color: "bg-yellow-500",
+    color: `${COLOR_OPTIONS[5].hex}`,
 },
 {
     id: "carbon-offset-programs",
@@ -93,9 +177,9 @@ export const dummyServices: ServicesType[] = [{
         "Verification and reporting",
         "Marketing and communication support"
     ],
-    imageUrl: "/services/carbon-offset.jpg",
+    imageUrl: "/images/carbonfootprint.jpg",
     icon: Recycle,
-    color: "bg-purple-500",
+    color: `${COLOR_OPTIONS[13].hex}`,
 },
 {
     id: "waste-reduction-strategies",
@@ -110,9 +194,9 @@ export const dummyServices: ServicesType[] = [{
         "Staff training and education",
         "Progress tracking and reporting"
     ],
-    imageUrl: "/services/waste-reduction.jpg",
+    imageUrl: "/images/wastereduction.jpg",
     icon: Trash2,
-    color: "bg-teal-500",
+    color: `${COLOR_OPTIONS[11].hex}`,
 },
 {
     id: "water-conservation",
@@ -127,9 +211,9 @@ export const dummyServices: ServicesType[] = [{
         "Process water recycling solutions",
         "Employee awareness programs"
     ],
-    imageUrl: "/services/water-conservation.jpg",
+    imageUrl: "/images/waterfootprint.jpg",
     icon: Droplet,
-    color: "bg-sky-500",
+    color: `${COLOR_OPTIONS[2].hex}`,
 },
 ];
 
@@ -151,9 +235,14 @@ export const sections: HeroSectionType[] = [
         image: "/images/blog.jpg",
     },
     {
-        title: "Our Services",
-        subtitle: "Explore how we help businesses and individuals achieve sustainability.",
+        title: "Sustainable Solutions for a Better Tomorrow",
+        subtitle: " We offer innovative environmental services designed to reduce your ecological footprint, improve sustainability performance, and create a positive impact on our planet.",
         image: "/images/services.jpg",
+    },
+    {
+        title: "Get in Touch",
+        subtitle: " Ready to start your sustainability journey? We're here to help you create a greener future for your organization.",
+        image: "/images/contact.jpg",
     }
 ]
 
@@ -173,6 +262,7 @@ export const navItems = [
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
 ];
+
 export const ICON_OPTIONS = [
     { name: "Leaf", component: Leaf },
     { name: "Droplet", component: Droplet },
@@ -191,22 +281,7 @@ export const ICON_OPTIONS = [
     { name: "Lightbulb", component: Lightbulb },
     { name: "Sprout", component: Sprout },
 ] as const
-export const COLOR_OPTIONS = [
-    { value: "bg-green-100", label: "Green" },
-    { value: "bg-green-200", label: "Light Green" },
-    { value: "bg-blue-100", label: "Blue" },
-    { value: "bg-blue-200", label: "Sky Blue" },
-    { value: "bg-yellow-100", label: "Yellow" },
-    { value: "bg-yellow-200", label: "Light Yellow" },
-    { value: "bg-purple-100", label: "Purple" },
-    { value: "bg-purple-200", label: "Lavender" },
-    { value: "bg-orange-100", label: "Peach" },
-    { value: "bg-orange-200", label: "Coral" },
-    { value: "bg-red-100", label: "Light Red" },
-    { value: "bg-red-200", label: "Rose" },
-    { value: "bg-gray-100", label: "Light Gray" },
-    { value: "bg-gray-200", label: "Cool Gray" },
-] as const;
+
 
 export const dummyTestimonials: TestimonialType[] = [
     {
@@ -305,9 +380,10 @@ export const dummyBlog: BlogPostType[] = [
 ]
 
 export const dummyCategories: CategoryType[] = [
-    { id: 1, name: "Tips & Tricks", postCount: 14 },
-    { id: 2, name: "Business", postCount: 9 },
-    { id: 3, name: "Guides", postCount: 8 },
-    { id: 4, name: "News", postCount: 12 },
-    { id: 5, name: "Case Studies", postCount: 6 },
+    { id: 1, name: "Renewable Energy", postCount: 14 },
+    { id: 2, name: "Zero Waste", postCount: 9 },
+    { id: 3, name: "Sustainable Living", postCount: 8 },
+    { id: 4, name: "Climate Action", postCount: 12 },
+    { id: 5, name: "Eco-Friendly Products", postCount: 6 },
+    { id: 6, name: "Case Studies", postCount: 6 },
 ]

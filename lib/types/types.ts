@@ -26,7 +26,7 @@ export type ServicesType = {
     color: string;
 }
 
-export type ServicesFormType ={
+export type ServicesFormType = {
     title: string;
     description: string;
     content: string;
@@ -38,10 +38,14 @@ export type ServicesFormType ={
 }
 
 export type BlogType = {
-    id: string;
+    _id: string;
     title: string;
-    text: string;
+    excerpt: string;
     imageUrl: string;
+    slug: string;
+    readTime: string;
+    category: string[];
+    date: string;
 }
 
 export type TestimonialType = {

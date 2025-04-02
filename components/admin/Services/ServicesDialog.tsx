@@ -360,9 +360,9 @@ export default function ServicesDialog({
                 </SelectTrigger>
                 <SelectContent>
                   {COLOR_OPTIONS.map((color) => (
-                    <SelectItem key={color.value} value={color.value}>
+                    <SelectItem key={color.label} value={color.hex}>
                       <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded ${color.value}`} />
+                        <div className="w-4 h-4 rounded" style={{ backgroundColor: color.hex }} />
                         <span>{color.label}</span>
                       </div>
                     </SelectItem>

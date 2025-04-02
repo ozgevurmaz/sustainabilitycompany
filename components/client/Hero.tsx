@@ -1,57 +1,91 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { motion } from "framer-motion";
 import { sections } from "@/lib/constant";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
-const HeroSection = ({ index }: { index: number }) => {
+interface HeroSectionProps {
+  index: number;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ index }) => {
   const router = useRouter();
+  const section = sections[index];
 
-  const imageUrl = sections[index].image;
+  const handleGetStarted = useCallback(() => {
+    router.push("/contact");
+  }, [router]);
+
+  // Animation variants for consistent animations
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (custom: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: custom * 0.2, duration: 0.5 }
+    })
+  };
 
   return (
     <div
-      className={`relative ${index === 0 ? "h-[70vh]" : "h-[40vh]"} `}
-      style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)), url(${imageUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center"
-      }}
+      className={`relative ${index === 0 ? "h-[70vh]" : "h-[40vh]"} w-full overflow-hidden`}
     >
-      <div className="bg-greenCover/65 w-full h-full flex items-center">
-      <div className="container mx-auto px-4 pt-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-green-200 to-white bg-clip-text text-transparent mb-8"
-          >
-            {sections[index].title}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-2xl text-white mb-8"
-          >
-            {sections[index].subtitle}
-          </motion.p>
-          {
-          index === 0 &&
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              onClick={() => router.push("/contact")}
-              className="bg-green-700 text-white px-8 py-4 rounded-lg hover:bg-green-400 hover:text-gray-900 transition-all duration-300 flex mx-auto">
-              Get Started <ChevronRight />
-            </motion.button>
-            }
-        </div>
-
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-black/60 z-10" />
+        <div className="absolute inset-0 bg-green-900/40 z-20" />
+        <Image
+          src={section.image}
+          alt={section.title}
+          fill
+          priority={index === 0}
+          sizes="100vw"
+          className="object-cover object-center"
+          quality={90}
+        />
       </div>
+
+      {/* Content */}
+      <div className="relative z-30 h-full w-full flex items-center justify-center">
+        <div className="container mx-auto px-4 pt-16 md:pt-20">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.h1
+              initial="hidden"
+              animate="visible"
+              custom={0}
+              variants={fadeInUp}
+              className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-green-200 to-white bg-clip-text text-transparent mb-6 md:mb-8 leading-tight"
+            >
+              {section.title}
+            </motion.h1>
+
+            <motion.p
+              initial="hidden"
+              animate="visible"
+              custom={1}
+              variants={fadeInUp}
+              className="text-lg md:text-2xl text-gray-100 mb-8 max-w-2xl mx-auto"
+            >
+              {section.subtitle}
+            </motion.p>
+
+            {index === 0 && (
+              <motion.button
+                initial="hidden"
+                animate="visible"
+                custom={2}
+                variants={fadeInUp}
+                onClick={handleGetStarted}
+                className="bg-green-700 hover:bg-green-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center mx-auto gap-2 font-medium shadow-lg"
+                aria-label="Get Started"
+              >
+                Get Started <ChevronRight className="h-5 w-5" />
+              </motion.button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
