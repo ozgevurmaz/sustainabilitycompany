@@ -7,8 +7,8 @@ import { Menu, X, ChevronDown } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { navItems } from '@/lib/constant';
 
-const Navbar = () => {
-const pathname = usePathname()
+const Navbar = ({ isBg }: { isBg?: boolean }) => {
+  const pathname = usePathname()
 
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -21,16 +21,12 @@ const pathname = usePathname()
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-  const isContactPage = pathname === "/contact";
-
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 text-white ${
-        isContactPage || isScrolled
-          ? "bg-green-700/90 backdrop-blur-md shadow-md"
+      className={`fixed w-full z-50 transition-all duration-300 text-white ${isBg || isScrolled
+          ? "bg-green-700 backdrop-blur-md shadow-md"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
@@ -47,7 +43,7 @@ const pathname = usePathname()
                   <div className="flex items-center cursor-pointer hover:text-green-300">
                     <span>{item.label}</span>
                     <ChevronDown className="ml-1 h-4 w-4" />
-                    
+
                     {/* Dropdown */}
                     <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
                       <div className="py-2">
@@ -66,7 +62,7 @@ const pathname = usePathname()
                 ) : (
                   <Link
                     href={item.href}
-                    className={`text-white hover:text-green-300 transition-colors duration-300 ${item.label==="Contact"? "border rounded-full border-white px-4 py-2 hover:border-green-300":""}`}
+                    className={`text-white hover:text-green-300 transition-colors duration-300 ${item.label === "Contact" ? "border rounded-full border-white px-4 py-2 hover:border-green-300" : ""}`}
                   >
                     {item.label}
                   </Link>

@@ -40,6 +40,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
+
 // Delete a service by ID
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   await connectToDB();

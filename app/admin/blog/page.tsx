@@ -1,26 +1,15 @@
 "use client";
 
-import { useState, useEffect, FormEvent, ChangeEvent } from "react";
-import { Session } from "next-auth";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -45,34 +34,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ArrowLeft,
   MoreVertical,
-  Plus,
   Eye,
   Pencil,
   Trash2,
   Calendar,
-  Tag,
-  Clock,
-  FileText,
   Search,
-  Filter,
   Loader2,
-  BarChart3,
   Hash,
-  Tags,
-  Calendar as CalendarIcon,
+  FileText,
+  Clock,
+  Plus,
 } from "lucide-react";
-import { BlogFormDataType, BlogPostType, CategoryType } from "@/lib/types/types";
+import { BlogPostType, CategoryType } from "@/lib/types/types";
 import { dummyBlog, dummyCategories } from "@/lib/constant";
 import SecondHeader from "@/components/admin/SecondHeader";
-import { BlogDialog } from "@/components/admin/Blog/BlogDialog";
 import { DeleteBlogDialog } from "@/components/admin/Blog/DeleteBlogDialog";
 import CustomCard from "../../../components/admin/CustomCard";
 
@@ -82,28 +61,12 @@ export default function BlogManagement() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filterCategory, setFilterCategory] = useState<string>("");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("");
   const [blogPosts, setBlogPosts] = useState<BlogPostType[]>([]);
   const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   const [currentPost, setCurrentPost] = useState<BlogPostType | null>(null);
-  const [editorContent, setEditorContent] = useState<string>("");
-  const [formData, setFormData] = useState<BlogFormDataType>({
-    title: "",
-    excerpt: "",
-    content: "",
-    category: "",
-    tags: "",
-    featuredImage: "",
-    status: "draft",
-    metaTitle: "",
-    metaDescription: "",
-    isPublished: false,
-    publishDate: new Date().toISOString().split("T")[0],
-  });
 
   // Redirect if not logged in as admin
   useEffect(() => {
@@ -118,9 +81,7 @@ export default function BlogManagement() {
       // Simulate API fetch with setTimeout
       const timer = setTimeout(() => {
         setBlogPosts(dummyBlog);
-
         setCategories(dummyCategories);
-
         setIsLoading(false);
       }, 800);
 
@@ -133,80 +94,24 @@ export default function BlogManagement() {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesCategory = filterCategory ? post.category === filterCategory : true;
+    const matchesCategory = filterCategory === "all" || !filterCategory
+      ? true
+      : Array.isArray(post.categories)
+        ? post.categories.includes(filterCategory)
+        : post.categories === filterCategory;
+
     const matchesStatus = filterStatus ? post.status === filterStatus : true;
 
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  // Handle form input changes
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // Handle checkbox change
-  const handleCheckboxChange = (name: string, checked: boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: checked
-    }));
-
-    // If publishing, set today's date
-    if (name === "isPublished" && checked) {
-      setFormData(prev => ({
-        ...prev,
-        publishDate: new Date().toISOString().split("T")[0],
-        status: "published"
-      }));
-    } else if (name === "isPublished" && !checked) {
-      setFormData(prev => ({
-        ...prev,
-        status: "draft"
-      }));
-    }
-  };
-
-  // Initialize create post dialog
+  // Initialize create post | edit post
   const handleCreateClick = () => {
-    setFormData({
-      title: "",
-      excerpt: "",
-      content: "",
-      category: "",
-      tags: "",
-      featuredImage: "",
-      status: "draft",
-      metaTitle: "",
-      metaDescription: "",
-      isPublished: false,
-      publishDate: new Date().toISOString().split("T")[0],
-    });
-    setEditorContent("");
-    setIsCreateDialogOpen(true);
+    router.push('/admin/blog/new');
   };
 
-  // Initialize edit post dialog
   const handleEditClick = (post: BlogPostType) => {
-    setCurrentPost(post);
-    setFormData({
-      title: post.title,
-      excerpt: post.excerpt,
-      content: post.content,
-      category: post.category,
-      tags: post.tags.join(", "),
-      featuredImage: post.featuredImage,
-      status: post.status,
-      metaTitle: post.metaTitle,
-      metaDescription: post.metaDescription,
-      isPublished: post.status === "published",
-      publishDate: post.publishDate || new Date().toISOString().split("T")[0],
-    });
-    setEditorContent(post.content);
-    setIsEditDialogOpen(true);
+    router.push(`/admin/blog/edit/${post.slug}`);
   };
 
   // Initialize delete post dialog
@@ -217,83 +122,7 @@ export default function BlogManagement() {
 
   // Preview post
   const handlePreviewClick = (post: BlogPostType) => {
-    window.open(`/blog/${post.id}`, '_blank');
-  };
-
-  // Submit new post
-  const handleCreateSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // API call
-    setTimeout(() => {
-      const newPost: BlogPostType = {
-        id: blogPosts.length + 1,
-        ...formData,
-        content: editorContent || formData.content,
-        tags: formData.tags.split(",").map(tag => tag.trim()).filter(Boolean),
-        author: session?.user?.name || "Admin",
-        authorImage: session?.user?.image || "/team/default.jpg",
-        readTime: "5 min",
-        views: 0,
-        likes: 0,
-        comments: 0
-      };
-
-      setBlogPosts(prev => [...prev, newPost]);
-      setIsCreateDialogOpen(false);
-      setFormData({
-        title: "",
-        excerpt: "",
-        content: "",
-        category: "",
-        tags: "",
-        featuredImage: "",
-        status: "draft",
-        metaTitle: "",
-        metaDescription: "",
-        isPublished: false,
-        publishDate: new Date().toISOString().split("T")[0],
-      });
-      setEditorContent("");
-      setIsLoading(false);
-
-      toast({
-        title: "Blog Post Created",
-        description: `"${newPost.title}" has been successfully created.`,
-      });
-    }, 500);
-  };
-
-  // Submit edit post
-  const handleEditSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!currentPost) return;
-
-    setIsLoading(true);
-
-    // API call
-    setTimeout(() => {
-      setBlogPosts(prev =>
-        prev.map(post =>
-          post.id === currentPost.id ? {
-            ...post,
-            ...formData,
-            content: editorContent || formData.content,
-            tags: formData.tags.split(",").map(tag => tag.trim()).filter(Boolean),
-          } : post
-        )
-      );
-      setIsEditDialogOpen(false);
-      setCurrentPost(null);
-      setEditorContent("");
-      setIsLoading(false);
-
-      toast({
-        title: "Blog Post Updated",
-        description: `"${formData.title}" has been successfully updated.`,
-      });
-    }, 500);
+    window.open(`/blog/${post.slug}`, '_blank');
   };
 
   // Submit delete post
@@ -363,6 +192,13 @@ export default function BlogManagement() {
           <CustomCard title="Categories" middleValue={String(categories.length)} desc="Content categories" />
         </div>
 
+        {/* Action buttons */}
+        <div className="flex justify-end mb-6">
+          <Button onClick={handleCreateClick} className="bg-green-600 hover:bg-green-700">
+            <Plus className="h-4 w-4 mr-2" /> Add New Post
+          </Button>
+        </div>
+
         {/* Search and Filter */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-grow">
@@ -389,9 +225,7 @@ export default function BlogManagement() {
                 ))}
               </SelectContent>
             </Select>
-            <Select value={filterCategory} onValueChange={(val) => {
-              setFilterCategory(val === "all" ? "" : val);
-            }}>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
@@ -449,9 +283,13 @@ export default function BlogManagement() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {post.category}
-                        </span>
+                        {Array.isArray(post.categories) && post.categories.length > 0 ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {Array.isArray(post.categories) ? post.categories[0] : post.categories}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${post.status === "published"
@@ -551,30 +389,6 @@ export default function BlogManagement() {
           ))}
         </div>
       </main>
-
-      {/* Add Blog Post */}
-      <BlogDialog
-        isOpen={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleCheckboxChange={handleCheckboxChange}
-        handleSubmit={handleCreateSubmit}
-        categories={categories}
-        isEdit={false}
-      />
-
-      {/* Edit Blog Post */}
-      <BlogDialog
-        isOpen={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleCheckboxChange={handleCheckboxChange}
-        handleSubmit={handleEditSubmit}
-        categories={categories}
-        isEdit={true}
-      />
 
       {/* Delete Blog Post */}
       <DeleteBlogDialog

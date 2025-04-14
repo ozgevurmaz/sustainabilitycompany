@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 let isConnection: boolean = false;
 
-export const connectToDB = async (): Promise<void> => {
+export const connectToDB = async (): Promise<void> => {  
   mongoose.set("strictQuery", true);
 
   if (isConnection) {
@@ -11,12 +11,11 @@ export const connectToDB = async (): Promise<void> => {
   }
 
   try {
-    mongoose.connect(process.env.MONGODB_URL || "", {
+    await mongoose.connect(process.env.MONGODB_URI!, {
       dbName: "FutureFootprint",
     });
-    isConnection = true;
-    console.log("mongoDB is connected")
+    console.log("✅ Connected to MongoDB");
   } catch (error) {
-    console.log(error);
+    console.error("❌ MongoDB connection failed:", error);
   }
 };

@@ -28,36 +28,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ArrowLeft,
   MoreVertical,
-  Plus,
   Eye,
   Pencil,
   Trash2,
-  Calendar,
   Search,
   Loader2,
   LayoutGrid,
   List,
   ArrowUp,
   ArrowDown,
-  Tag,
   Leaf,
-  Sun,
-  Recycle,
-  Battery,
-  Building,
-  Car,
-  Earth,
-  Flower2,
-  Globe,
-  Lightbulb,
-  Sprout,
-  Trees,
-  Waves,
-  Wind,
-  Zap,
-  Droplet,
   LucideIcon,
 } from "lucide-react";
 
@@ -99,6 +80,35 @@ export default function ServicesManagement() {
       }, 800);
     }
   }, [status, session]);
+
+    // Fetch services data from the API
+    const fetchServices = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/services');
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        const data = await response.json();
+        
+        // Convert string icon names to component references
+        const processedServices = data.map((service: any) => ({
+          ...service,
+          icon: service.icon || Leaf
+        }));
+        
+        setServices(processedServices);
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load services. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   // Filter and search services
   const filteredServices = services.filter(service => {
@@ -147,7 +157,7 @@ export default function ServicesManagement() {
     });
   };
 
-  // Handle add click - Open dialog with no service (for creation)
+  // Handle add click - Open dialog with no service
   const handleAddClick = () => {
     setCurrentService(null);
     setIsDialogOpen(true);
@@ -178,21 +188,67 @@ export default function ServicesManagement() {
     );
   }
 
-  // Handle save service (create or update)
-  const handleSaveService = (newService: ServicesType) => {
-    setServices((prev) => {
-      const exists = prev.find(s => s.id === newService.id);
-      if (exists) {
-        return prev.map(s => s.id === newService.id ? newService : s);
-      }
-      return [...prev, newService];
-    });
+// Handle save service (create or update)
+const handleSaveService = async (serviceData: ServicesType) => {
+  try {
+    setIsLoading(true);
+   /*
+    // Convert icon component to string name for API
+    let iconName = "Leaf";
+    const iconConstructorName = serviceData.icon?.name;
 
+    if (iconConstructorName) {
+      iconName = iconConstructorName;
+    }
+    
+    const apiData = {
+      ...serviceData,
+      icon: iconName
+    };
+    
+    let response;
+    
+    if (currentService) {
+      // Update existing service
+      response = await fetch(`/api/services/${serviceData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apiData),
+      });
+    } else {
+      // Create new service
+      response = await fetch('/api/services', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apiData),
+      });
+    }
+    
+    if (!response.ok) {
+      throw new Error(currentService ? 'Failed to update service' : 'Failed to create service');
+    }
+    
+    // Refresh the services list
+    await fetchServices();
+    
     toast({
       title: currentService ? "Service Updated" : "Service Created",
-      description: `"${newService.title}" has been saved.`,
+      description: `"${serviceData.title}" has been saved.`,
     });
-  };
+    
+    setIsDialogOpen(false);
+    */
+  } catch (error) {
+    console.error('Error saving service:', error);
+    toast({
+      title: "Error",
+      description: `Failed to ${currentService ? 'update' : 'create'} service. Please try again.`,
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleConfirmDelete = (id: string) => {
     setServices((prev) => prev.filter((s) => s.id !== id));

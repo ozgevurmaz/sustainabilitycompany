@@ -6,15 +6,15 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Leaf, Droplet, Sun, Building, TrendingUp, Award } from "lucide-react";
 import HeroSection from "@/components/client/Hero";
-import { dummyPosts, dummyServices } from "@/lib/constant";
+import { dummyBlog, dummyServices } from "@/lib/constant";
 import ServicesSection from "@/components/client/servicesSection";
 import Testimonial from "@/components/client/testimonial";
 import InformationCards from "@/components/client/Home/InformationCards";
 import BlogCard from "@/components/client/Blog/BlogCard";
-import { BlogType } from "@/lib/types/types";
+import { BlogPostType, BlogType } from "@/lib/types/types";
 
 export default function Home() {
-  const [posts, setPosts] = useState<BlogType[]>(dummyPosts);
+  const [posts, setPosts] = useState<BlogPostType[]>(dummyBlog);
 
   return (
     <div className="min-h-screen">
@@ -139,7 +139,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.slice(0, 3).map((post) => (
-              <BlogCard post={post} key={post._id}/>
+              <BlogCard post={post} key={post.id}/>
             ))}
           </div>
 

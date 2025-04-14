@@ -7,22 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ArrowRight, Clock, Calendar, Search, Tag } from "lucide-react";
 import HeroSection from "@/components/client/Hero";
-import { dummyPosts } from "@/lib/constant";
+import { dummyBlog, dummyCategories } from "@/lib/constant";
 import BlogCard from "@/components/client/Blog/BlogCard";
 
-// Categories for sustainability blog
-const categories = [
-    "All",
-    "Renewable Energy",
-    "Zero Waste",
-    "Sustainable Living",
-    "Climate Action",
-    "Eco-Friendly Products",
-    "Case Studies"
-];
-
 export default function Blog() {
-    const [posts, setPosts] = useState(dummyPosts);
+    const [posts, setPosts] = useState(dummyBlog);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [featuredPost, ...regularPosts] = posts;
@@ -31,7 +20,7 @@ export default function Blog() {
     const filteredPosts = posts.filter((post) => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedCategory === "All" || post.category.includes(selectedCategory);
+        const matchesCategory = selectedCategory === "All" || post.categories.includes(selectedCategory);
         return matchesSearch && matchesCategory;
     });
 
@@ -57,16 +46,16 @@ export default function Blog() {
 
                         {/* Category Pills */}
                         <div className="flex flex-wrap gap-2 justify-center md:justify-end">
-                            {categories.map((category) => (
+                            {dummyCategories.map((category) => (
                                 <button
-                                    key={category}
-                                    onClick={() => setSelectedCategory(category)}
-                                    className={`px-3 py-1 text-sm rounded-full transition-all ${selectedCategory === category
+                                    key={category.id}
+                                    onClick={() => setSelectedCategory(category.name)}
+                                    className={`px-3 py-1 text-sm rounded-full transition-all ${selectedCategory === category.name
                                         ? "bg-green-600 text-white"
                                         : "bg-white text-gray-700 hover:bg-green-100"
                                         }`}
                                 >
-                                    {category}
+                                    {category.name}
                                 </button>
                             ))}
                         </div>
@@ -83,7 +72,7 @@ export default function Blog() {
                             <div className="grid grid-cols-1 lg:grid-cols-2">
                                 <div className="relative h-64 lg:h-full min-h-[320px]">
                                     <Image
-                                        src={featuredPost.imageUrl}
+                                        src={featuredPost.featuredImage}
                                         fill
                                         style={{ objectFit: 'cover' }}
                                         alt={featuredPost.title}
@@ -94,7 +83,7 @@ export default function Blog() {
                                     <div>
                                         <div className="mb-4">
                                             <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">
-                                                {featuredPost.category || "Sustainable Living"}
+                                                {featuredPost.categories || "Sustainable Living"}
                                             </span>
                                         </div>
                                         <h3 className="text-3xl font-bold text-gray-900 mb-4">{featuredPost.title}</h3>
@@ -105,7 +94,7 @@ export default function Blog() {
                                             <Clock className="h-4 w-4 mr-1" />
                                             <span className="mr-4">{featuredPost.readTime}</span>
                                             <Calendar className="h-4 w-4 mr-1" />
-                                            <span>{featuredPost.date || "April 2, 2025"}</span>
+                                            <span>{featuredPost.publishDate || "April 2, 2025"}</span>
                                         </div>
                                         <Link href={`/blog/${featuredPost.slug}`}>
                                             <Button className="bg-green-600 hover:bg-green-700">
@@ -136,7 +125,7 @@ export default function Blog() {
                     {filteredPosts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filteredPosts.map((post) => (
-                                <BlogCard post={post} key={post._id} />
+                                <BlogCard post={post} key={post.id} />
                             ))}
                         </div>
                     ) : (

@@ -1,26 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import {
   AlertCircle,
   Leaf,
-  Sun,
-  Recycle,
-  Building,
-  Lightbulb,
-  Flower2,
-  Droplet,
-  Earth,
-  Globe,
-  Trees,
-  Wind,
-  Car,
-  Battery,
-  Waves,
-  Zap,
-  Sprout,
-  X,
   Plus,
   Trash2
 } from "lucide-react";
@@ -78,6 +61,7 @@ export default function ServicesDialog({
   const [newBenefit, setNewBenefit] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [image, setImage] = useState<string>("")
 
   // Reset form when dialog opens or service changes
   useEffect(() => {
@@ -136,37 +120,9 @@ export default function ServicesDialog({
     }));
   }, []);
 
-  const validateForm = useCallback(() => {
-    if (!form.title.trim()) {
-      setError("Please enter a service title");
-      return false;
-    }
-    if (!form.description.trim()) {
-      setError("Please enter a service description");
-      return false;
-    }
-    if (!form.content.trim()) {
-      setError("Please enter service content");
-      return false;
-    }
-    if (!form.importance.trim()) {
-      setError("Please enter service importance");
-      return false;
-    }
-    if (!form.icon) {
-      setError("Please select an icon");
-      return false;
-    }
-    if (!form.color) {
-      setError("Please select a color");
-      return false;
-    }
-    return true;
-  }, [form]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
 
     setIsSubmitting(true);
     setError("");
@@ -231,12 +187,12 @@ export default function ServicesDialog({
             </p>
           </div>
 
-          <div>
+          <div  data-radix-focus-guard="disabled">
             <Label className="text-sm font-medium">Cover Image</Label>
             <ImageUploader
               value={form.imageUrl}
-              onChange={(url) => updateForm("imageUrl", url)}
-              onRemove={() => updateForm("imageUrl", "")}
+              onChange={setImage}
+              onRemove={()=>setImage("")}
             />
           </div>
 

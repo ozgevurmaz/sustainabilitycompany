@@ -19,23 +19,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Star,
-  StarHalf,
   Pencil,
   Trash2,
   Plus,
   ArrowLeft,
   Loader2,
-  UserCircle2,
-  MessageSquare,
+  X,
+  Check,
 } from "lucide-react";
 import Link from "next/link";
 import { TestimonialFormType, TestimonialType } from "@/lib/types/types";
 import { dummyTestimonials } from "@/lib/constant";
-import TestimonialDialog from "@/components/admin/Testimonial/TestimonialDialog";
 import DeleteTestimonialDialog from "@/components/admin/Testimonial/DeleteTestimonialDialog";
+import TestimonialCard, { renderRatingStars } from "@/components/admin/Testimonial/TestimonialCard";
+import SecondHeader from "@/components/admin/SecondHeader";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 export default function TestimonialsManagement() {
   const { data: session, status } = useSession();
@@ -43,14 +46,14 @@ export default function TestimonialsManagement() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
-  
-  // Dialog state management
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // Form display states
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState<TestimonialType | null>(null);
-  
-  // Separate form states for add and edit
+
+  // Form states
   const [addFormData, setAddFormData] = useState<TestimonialFormType>({
     name: "",
     company: "",
@@ -59,7 +62,7 @@ export default function TestimonialsManagement() {
     rating: 5,
     imageUrl: "",
   });
-  
+
   const [editFormData, setEditFormData] = useState<TestimonialFormType>({
     name: "",
     company: "",
@@ -107,7 +110,11 @@ export default function TestimonialsManagement() {
 
   // Handle edit testimonial
   const handleEditClick = (testimonial: TestimonialType) => {
-    setCurrentTestimonial(testimonial);
+    // Close add form if it's open
+    setShowAddForm(false);
+    
+    // Set editing id and form data
+    setEditingId(testimonial.id);
     setEditFormData({
       name: testimonial.name,
       company: testimonial.company,
@@ -116,7 +123,6 @@ export default function TestimonialsManagement() {
       rating: testimonial.rating,
       imageUrl: testimonial.imageUrl || ""
     });
-    setIsEditDialogOpen(true);
   };
 
   // Handle delete testimonial
@@ -135,6 +141,7 @@ export default function TestimonialsManagement() {
       rating: 5,
       imageUrl: "",
     });
+    setShowAddForm(false);
   };
 
   // Reset edit form
@@ -147,7 +154,7 @@ export default function TestimonialsManagement() {
       rating: 5,
       imageUrl: "",
     });
-    setCurrentTestimonial(null);
+    setEditingId(null);
   };
 
   // Submit new testimonial
@@ -158,14 +165,13 @@ export default function TestimonialsManagement() {
     // API call
     setTimeout(() => {
       const newTestimonial = {
-        id: testimonials.length + 1,
+        id: Math.max(...testimonials.map(t => t.id), 0) + 1,
         ...addFormData,
         featured: false,
         date: new Date().toISOString().split('T')[0]
       };
 
       setTestimonials(prev => [...prev, newTestimonial]);
-      setIsAddDialogOpen(false);
       resetAddForm();
       setIsLoading(false);
 
@@ -185,10 +191,9 @@ export default function TestimonialsManagement() {
     setTimeout(() => {
       setTestimonials(prev =>
         prev.map(item =>
-          item.id === currentTestimonial?.id ? { ...item, ...editFormData } : item
+          item.id === editingId ? { ...item, ...editFormData } : item
         )
       );
-      setIsEditDialogOpen(false);
       resetEditForm();
       setIsLoading(false);
 
@@ -197,18 +202,6 @@ export default function TestimonialsManagement() {
         description: "The testimonial has been successfully updated."
       });
     }, 500);
-  };
-
-  // Handle add dialog close
-  const handleAddDialogClose = () => {
-    setIsAddDialogOpen(false);
-    resetAddForm();
-  };
-
-  // Handle edit dialog close
-  const handleEditDialogClose = () => {
-    setIsEditDialogOpen(false);
-    resetEditForm();
   };
 
   // Submit delete testimonial
@@ -245,21 +238,32 @@ export default function TestimonialsManagement() {
     });
   };
 
-  // Render rating stars
-  const renderRatingStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
+  const handleImageChange = (imageUrl: string) => {
+    setTestimonials(prev => ({
+      ...prev,
+      featuredImage: imageUrl
+    }));
+  };
 
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`full-${i}`} className="h-4 w-4 fill-yellow-400 text-yellow-400" />);
-    }
+  const handleAddNewClick = () => {
+    // Reset the edit form if it's open
+    resetEditForm();
+    
+    // Toggle the add form
+    setShowAddForm(!showAddForm);
+  };
 
-    if (hasHalfStar) {
-      stars.push(<StarHalf key="half" className="h-4 w-4 fill-yellow-400 text-yellow-400" />);
-    }
-
-    return <div className="flex">{stars}</div>;
+  // Cloudinary widget function placeholder
+  const openCloudinaryWidget = (setFormData: Function, currentValue: string) => {
+    // This is a placeholder for the Cloudinary widget integration
+    // You would implement the Cloudinary widget here and update the form data
+    alert("Cloudinary widget would open here. This is a placeholder.");
+    
+    // Example of how you might set the image URL after upload
+    setFormData((prev: TestimonialFormType) => ({
+      ...prev,
+      imageUrl: currentValue || "https://example.com/placeholder-image.jpg"
+    }));
   };
 
   if (status === "loading" || isLoading) {
@@ -270,28 +274,152 @@ export default function TestimonialsManagement() {
     );
   }
 
+  // Form component for reuse
+  const TestimonialForm = ({
+    formData,
+    handleInputChange,
+    handleSubmit,
+    formTitle,
+    submitButtonText,
+    onCancel,
+    isForEdit = false
+  }: {
+    formData: TestimonialFormType,
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
+    formTitle: string,
+    submitButtonText: string,
+    onCancel: () => void,
+    isForEdit?: boolean
+  }) => (
+    <Card className="mb-8">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>{formTitle}</CardTitle>
+          <CardDescription>
+            {isForEdit ? "Update the testimonial information" : "Fill in the details to add a new testimonial"}
+          </CardDescription>
+        </div>
+        <Button variant="ghost" size="icon" onClick={onCancel}>
+          <X className="h-5 w-5" />
+        </Button>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor={`${isForEdit ? 'edit' : 'add'}-name`}>Customer Name</Label>
+              <Input 
+                id={`${isForEdit ? 'edit' : 'add'}-name`} 
+                name="name" 
+                value={formData.name} 
+                onChange={handleInputChange} 
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`${isForEdit ? 'edit' : 'add'}-company`}>Company</Label>
+              <Input 
+                id={`${isForEdit ? 'edit' : 'add'}-company`} 
+                name="company" 
+                value={formData.company} 
+                onChange={handleInputChange} 
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`${isForEdit ? 'edit' : 'add'}-position`}>Position</Label>
+              <Input 
+                id={`${isForEdit ? 'edit' : 'add'}-position`} 
+                name="position" 
+                value={formData.position} 
+                onChange={handleInputChange} 
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`${isForEdit ? 'edit' : 'add'}-rating`}>Rating (1-5)</Label>
+              <Input 
+                id={`${isForEdit ? 'edit' : 'add'}-rating`} 
+                name="rating" 
+                type="number" 
+                min="1" 
+                max="5" 
+                step="0.5" 
+                value={formData.rating} 
+                onChange={handleInputChange} 
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor={`${isForEdit ? 'edit' : 'add'}-imageUrl`}>Image URL</Label>
+                <ImageUploader
+                value={formData.imageUrl}
+                onChange={(url) => handleImageChange(url)}
+                onRemove={() => handleImageChange("")}
+                /> 
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor={`${isForEdit ? 'edit' : 'add'}-comment`}>Testimonial</Label>
+              <Textarea 
+                id={`${isForEdit ? 'edit' : 'add'}-comment`} 
+                name="comment" 
+                rows={4} 
+                value={formData.comment} 
+                onChange={handleInputChange} 
+                required 
+              />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-4 pt-4">
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              {submitButtonText}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <Link href="/admin">
-              <Button variant="ghost" className="mr-4">
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Back to Dashboard
-              </Button>
-            </Link>
-            <h1 className="text-xl font-bold text-green-700">Manage Testimonials</h1>
-          </div>
-          <Button onClick={() => setIsAddDialogOpen(true)}>
-            <Plus className="h-5 w-5 mr-2" />
-            Add New Testimonial
-          </Button>
-        </div>
-      </header>
+      <SecondHeader 
+        pageTitle="Testimonial" 
+        dialogOpen={handleAddNewClick} 
+        buttonText={showAddForm ? "Cancel New" : "Add New"} 
+      />
 
       <main className="container mx-auto px-4 py-8">
+        
+        {/* Add Form */}
+        {showAddForm && (
+          <TestimonialForm 
+            formData={addFormData}
+            handleInputChange={handleAddInputChange}
+            handleSubmit={handleAddSubmit}
+            formTitle="Add New Testimonial"
+            submitButtonText="Add Testimonial"
+            onCancel={resetAddForm}
+          />
+        )}
+
+        {/* Edit Form */}
+        {editingId !== null && (
+          <TestimonialForm 
+            formData={editFormData}
+            handleInputChange={handleEditInputChange}
+            handleSubmit={handleEditSubmit}
+            formTitle={`Edit Testimonial: ${editFormData.name}`}
+            submitButtonText="Update Testimonial"
+            onCancel={resetEditForm}
+            isForEdit={true}
+          />
+        )}
+        
         {/* Summary Card */}
         <Card className="mb-8">
           <CardHeader>
@@ -314,8 +442,8 @@ export default function TestimonialsManagement() {
               </div>
               <div className="flex flex-col items-center p-4 bg-purple-50 rounded-lg">
                 <div className="text-3xl font-bold text-purple-700">
-                  {testimonials.length > 0 
-                    ? (testimonials.reduce((acc, curr) => acc + curr.rating, 0) / testimonials.length).toFixed(1) 
+                  {testimonials.length > 0
+                    ? (testimonials.reduce((acc, curr) => acc + curr.rating, 0) / testimonials.length).toFixed(1)
                     : "0.0"}
                 </div>
                 <div className="text-sm text-gray-600">Average Rating</div>
@@ -346,7 +474,7 @@ export default function TestimonialsManagement() {
               </TableHeader>
               <TableBody>
                 {testimonials.map((testimonial) => (
-                  <TableRow key={testimonial.id}>
+                  <TableRow key={testimonial.id} className={testimonial.id === editingId ? "bg-blue-50" : ""}>
                     <TableCell className="font-medium">{testimonial.name}</TableCell>
                     <TableCell>{testimonial.company}</TableCell>
                     <TableCell>{renderRatingStars(testimonial.rating)}</TableCell>
@@ -362,9 +490,15 @@ export default function TestimonialsManagement() {
                     <TableCell>{testimonial.date}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => handleEditClick(testimonial)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
+                        {testimonial.id === editingId ? (
+                          <Button variant="outline" size="sm" className="text-green-600" onClick={resetEditForm}>
+                            <X className="h-4 w-4" />
+                          </Button>
+                        ) : (
+                          <Button variant="outline" size="sm" onClick={() => handleEditClick(testimonial)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        )}
                         <Button variant="outline" size="sm" className="text-red-600" onClick={() => handleDeleteClick(testimonial)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -381,63 +515,10 @@ export default function TestimonialsManagement() {
         <h2 className="text-xl font-semibold mt-8 mb-4">Testimonial Preview</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {testimonials.filter(t => t.featured).map((testimonial) => (
-            <Card key={`preview-${testimonial.id}`} className="overflow-hidden">
-              <CardHeader className="pb-0">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-3 overflow-hidden">
-                      {testimonial.imageUrl ? (
-                        <img src={testimonial.imageUrl} alt={testimonial.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <UserCircle2 className="w-8 h-8 text-gray-400" />
-                      )}
-                    </div>
-                    <div>
-                      <CardTitle className="text-base">{testimonial.name}</CardTitle>
-                      <CardDescription className="text-xs">
-                        {testimonial.position} at {testimonial.company}
-                      </CardDescription>
-                    </div>
-                  </div>
-                  <div>
-                    {renderRatingStars(testimonial.rating)}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <div className="relative">
-                  <MessageSquare className="absolute top-0 left-0 w-8 h-8 text-gray-200 -z-10" />
-                  <p className="text-sm text-gray-700 pl-6 line-clamp-4">
-                    "{testimonial.comment}"
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <TestimonialCard testimonial={testimonial} key={testimonial.id} />
           ))}
         </div>
       </main>
-
-      {/* Add Testimonial Dialog */}
-      <TestimonialDialog
-        isDialogOpen={isAddDialogOpen}
-        onOpenChange={setIsAddDialogOpen}
-        onClose={handleAddDialogClose}
-        mode="add"
-        handleSubmit={handleAddSubmit}
-        handleInputChange={handleAddInputChange}
-        formData={addFormData}
-      />
-
-      {/* Edit Testimonial Dialog */}
-      <TestimonialDialog
-        isDialogOpen={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        onClose={handleEditDialogClose}
-        mode="edit"
-        handleSubmit={handleEditSubmit}
-        handleInputChange={handleEditInputChange}
-        formData={editFormData}
-      />
 
       {/* Delete Confirmation Dialog */}
       <DeleteTestimonialDialog

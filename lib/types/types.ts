@@ -69,42 +69,28 @@ export type TestimonialFormType = {
     imageUrl: string;
 }
 
-export interface BlogPostType {
-    id: number;
-    title: string;
-    excerpt: string;
-    content: string;
-    category: string;
-    tags: string[];
-    featuredImage: string;
-    status: "published" | "draft";
-    metaTitle: string;
-    metaDescription: string;
-    author: string;
-    authorImage: string;
-    publishDate: string;
-    readTime: string;
-    views: number;
-    likes: number;
-    comments: number;
-}
+    export interface BlogPostType {
+        id: number;
+        title: string;
+        slug: string;
+        excerpt: string;
+        content: string;
+        categories: string[];
+        tags: string[] | string;
+        featuredImage: string;
+        status: "published" | "draft";
+        isPublished: boolean;
+        metaTitle: string;
+        metaDescription: string;
+        publishDate: string;
+        readTime: string;
+        views: number;
+        likes: number;
+        comments: number;
+    }
 
 export interface CategoryType {
     id: number;
     name: string;
     postCount: number;
-}
-
-export interface BlogFormDataType {
-    title: string;
-    excerpt: string;
-    content: string;
-    category: string;
-    tags: string;
-    featuredImage: string;
-    status: "published" | "draft";
-    metaTitle: string;
-    metaDescription: string;
-    isPublished: boolean;
-    publishDate: string;
 }
