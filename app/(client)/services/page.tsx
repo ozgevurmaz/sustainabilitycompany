@@ -3,7 +3,7 @@
 import React from 'react';
 import HeroSection from "@/components/client/Hero";
 import ServicesSection from "@/components/client/servicesSection";
-import { dummyPosts, dummyServices } from "@/lib/constant";
+import { dummyBlog, dummyServices } from "@/lib/constant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Check, Leaf, Recycle, Droplet, Sun, Wind, TreePine, Trash2 } from "lucide-react";
@@ -226,10 +226,10 @@ export default function Services() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {dummyPosts
-              .filter((post) => post.category.includes("Case Studies"))
+            {dummyBlog
+              .filter((post) => post.categories.includes("Case Studies"))
               .map((post) => (
-                <BlogCard post={post} key={post._id} />
+                <BlogCard post={post} key={post.id} />
               ))
             }
           </div>
