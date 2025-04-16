@@ -15,7 +15,6 @@ interface ImageUploaderProps {
 const ImageUploader: React.FC<ImageUploaderProps> = ({ value, onChange, onRemove }) => {
 
   const onUpload = (result: any) => {
-    console.log("Cloudinary Result:", result);
 
     if (result.info && result.info.secure_url) {
       onChange(result.info.secure_url);

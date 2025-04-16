@@ -11,13 +11,7 @@ import BlogCard from '@/components/client/Blog/BlogCard';
 import Link from 'next/link';
 
 export default function Services() {
-  // Group services by sustainability category
-  const serviceCategories = [
-    { id: "all", label: "All Solutions", icon: Leaf },
-    { id: "energy", label: "Clean Energy", icon: Sun },
-    { id: "water", label: "Water Conservation", icon: Droplet },
-    { id: "carbon", label: "Carbon Reduction", icon: Recycle }
-  ];
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -50,11 +44,11 @@ export default function Services() {
       <section className="py-16 bg-green-50">
         <div className="container mx-auto px-4">
           <Tabs defaultValue="all" className="w-full max-w-4xl mx-auto">
-            <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2 bg-white p-1 rounded-lg mb-8">
+            <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-white p-1 rounded-lg mb-8">
               <TabsTrigger
                 key="all"
                 value="all"
-                className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-md py-2 flex items-center justify-center"
+                className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-md py-1 flex items-center justify-center"
               >
                 <Leaf className="h-4 w-4 mr-2" />
                 All Solutions
@@ -73,7 +67,15 @@ export default function Services() {
                 className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-md py-2 flex items-center justify-center"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Waste & Water
+                Waste
+              </TabsTrigger>
+              <TabsTrigger
+                key="water"
+                value="water"
+                className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-md py-2 flex items-center justify-center"
+              >
+                <Droplet className="h-4 w-4 mr-2" />
+                Water
               </TabsTrigger>
               <TabsTrigger
                 key="carbon"
@@ -81,14 +83,13 @@ export default function Services() {
                 className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-md py-2 flex items-center justify-center"
               >
                 <Recycle className="h-4 w-4 mr-2" />
-                Carbon Management
+                Carbon
               </TabsTrigger>
             </TabsList>
 
             {/* All Solutions Tab */}
             <TabsContent value="all">
               <ServicesSection
-                services={dummyServices}
                 title="Our Sustainability Solutions"
                 subtitle="Comprehensive services to improve your organization's environmental performance"
               />
@@ -97,22 +98,25 @@ export default function Services() {
             {/* Energy Tab */}
             <TabsContent value="energy">
               <ServicesSection
-                services={dummyServices.filter(service =>
-                  service.id === "renewable-energy-implementation" ||
-                  service.id === "green-building-consultation"
-                )}
+                filter="energy"
                 title="Energy Solutions"
                 subtitle="Optimize energy usage and transition to renewable sources"
               />
             </TabsContent>
 
-            {/* Waste & Water Tab */}
+            {/* Waste Tab */}
             <TabsContent value="waste">
               <ServicesSection
-                services={dummyServices.filter(service =>
-                  service.id === "waste-reduction-strategies" ||
-                  service.id === "water-conservation"
-                )}
+                filter="waste"
+                title="Waste & Water Management"
+                subtitle="Reduce consumption and minimize environmental impact"
+              />
+            </TabsContent>
+
+            {/* Water Tab */}
+            <TabsContent value="water">
+              <ServicesSection
+                filter="water"
                 title="Waste & Water Management"
                 subtitle="Reduce consumption and minimize environmental impact"
               />
@@ -121,10 +125,7 @@ export default function Services() {
             {/* Carbon Management Tab */}
             <TabsContent value="carbon">
               <ServicesSection
-                services={dummyServices.filter(service =>
-                  service.id === "carbon-offset-programs" ||
-                  service.id === "sustainability-audits"
-                )}
+                filter="carbon"
                 title="Carbon Management"
                 subtitle="Measure, reduce and offset your carbon footprint"
               />
@@ -236,7 +237,7 @@ export default function Services() {
 
           <div className="mt-12 text-center flex justify-center">
             <Link
-            href="/blog"
+              href="/blog"
               className="border bg-green-600 text-white hover:bg-green-700 px-6 py-2 rounded-lg flex items-center w-fit"
             >
               View All Case Studies

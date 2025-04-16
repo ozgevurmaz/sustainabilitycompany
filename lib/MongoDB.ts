@@ -6,7 +6,6 @@ export const connectToDB = async (): Promise<void> => {
   mongoose.set("strictQuery", true);
 
   if (isConnection) {
-    console.log("mongoDB is already connected.");
     return;
   }
 
@@ -14,6 +13,7 @@ export const connectToDB = async (): Promise<void> => {
     await mongoose.connect(process.env.MONGODB_URI!, {
       dbName: "FutureFootprint",
     });
+    isConnection = true;
     console.log("✅ Connected to MongoDB");
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error);

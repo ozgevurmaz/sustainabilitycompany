@@ -26,13 +26,9 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Pencil,
   Trash2,
-  Plus,
-  ArrowLeft,
   Loader2,
   X,
-  Check,
 } from "lucide-react";
-import Link from "next/link";
 import { TestimonialFormType, TestimonialType } from "@/lib/types/types";
 import { dummyTestimonials } from "@/lib/constant";
 import DeleteTestimonialDialog from "@/components/admin/Testimonial/DeleteTestimonialDialog";
@@ -253,18 +249,6 @@ export default function TestimonialsManagement() {
     setShowAddForm(!showAddForm);
   };
 
-  // Cloudinary widget function placeholder
-  const openCloudinaryWidget = (setFormData: Function, currentValue: string) => {
-    // This is a placeholder for the Cloudinary widget integration
-    // You would implement the Cloudinary widget here and update the form data
-    alert("Cloudinary widget would open here. This is a placeholder.");
-    
-    // Example of how you might set the image URL after upload
-    setFormData((prev: TestimonialFormType) => ({
-      ...prev,
-      imageUrl: currentValue || "https://example.com/placeholder-image.jpg"
-    }));
-  };
 
   if (status === "loading" || isLoading) {
     return (
@@ -390,7 +374,6 @@ export default function TestimonialsManagement() {
       <SecondHeader 
         pageTitle="Testimonial" 
         dialogOpen={handleAddNewClick} 
-        buttonText={showAddForm ? "Cancel New" : "Add New"} 
       />
 
       <main className="container mx-auto px-4 py-8">

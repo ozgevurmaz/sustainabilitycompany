@@ -28,8 +28,6 @@ export default function AddNewBlogPage() {
     metaDescription: "",
     isPublished: false,
     publishDate: new Date().toISOString().split("T")[0],
-    author: "",
-    authorImage: "",
     readTime: "",
     views: 0,
     likes: 0,
@@ -117,33 +115,21 @@ export default function AddNewBlogPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-5xl mx-auto bg-white rounded-lg shadow p-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold">Create New Blog Post</h1>
-          <p className="text-gray-500">Add a new blog post to your website</p>
-        </div>
 
-        {categories.length === 0 ? (
-          <div className="flex items-center justify-center h-40">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-          </div>
-        ) : (
-          <BlogForm
-            isOpen={true}
-            onOpenChange={() => router.push('/admin/blog')}
-            formData={formData}
-            handleImageChange={handleImageChange}
-            handleInputChange={handleInputChange}
-            handleCheckboxChange={handleCheckboxChange}
-            handleCategoriesChange={handleCategoriesChange}
-            handleSubmit={handleCreateSubmit}
-            categories={categories}
-            isEdit={false}
-            isSubmitting={isSubmitting}
-          />
-        )}
-      </div>
-    </div>
+    <BlogForm
+      isOpen={true}
+      onOpenChange={() => router.push('/admin/blog')}
+      formData={formData}
+      handleImageChange={handleImageChange}
+      handleInputChange={handleInputChange}
+      handleCheckboxChange={handleCheckboxChange}
+      handleCategoriesChange={handleCategoriesChange}
+      handleSubmit={handleCreateSubmit}
+      categories={categories}
+      isEdit={false}
+      isSubmitting={isSubmitting}
+    />
+
+
   );
 }

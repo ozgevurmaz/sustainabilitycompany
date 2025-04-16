@@ -1,33 +1,33 @@
-import React from 'react';
-import { Card, CardContent } from '../ui/card';
+"use client"
+
+import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 import { usePathname, useRouter } from 'next/navigation';
 import { ServicesType } from '@/lib/types/types';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import ServiceCard from './Home/ServiceCard';
+import { toast } from '@/hooks/use-toast';
+import LoadingPage from '../LoadingPage';
 
 interface ServicesSectionProps {
-  services: ServicesType[];
   title?: string;
   subtitle?: string;
+  filter?: string;
 }
 
 const ServicesSection: React.FC<ServicesSectionProps> = ({
-  services,
   title = "Our Services",
-  subtitle = "Explore our range of professional services tailored to meet your needs"
+  subtitle = "Explore our range of professional services tailored to meet your needs",
+  filter
 }) => {
   const pathname = usePathname();
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [services, setServices] = useState<ServicesType[]>([])
   const isServicesPage = pathname === "/services";
 
-  const gridCols = isServicesPage
-    ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6";
-
-  // Animation variants for staggered animations
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -37,6 +37,45 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
       }
     }
   };
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/services');
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        let data = await response.json();
+
+        if (filter) {
+          const lowerFilter = filter.toLowerCase();
+          data = data.filter((service: ServicesType) =>
+            service.title.toLowerCase().includes(lowerFilter) ||
+            service.description.toLowerCase().includes(lowerFilter) ||
+            service.benefits.some(benefit =>
+              benefit.toLowerCase().includes(lowerFilter)
+            )
+          );
+        }
+        
+        const sorted = data.sort((a: ServicesType, b: ServicesType) => a.order - b.order);
+        setServices(sorted);
+
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load services. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchServices();
+  }, [])
+
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -48,6 +87,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
       }
     }
   };
+
+  if (isLoading) {
+    return <LoadingPage />
+  }
 
   return (
     <section
@@ -75,7 +118,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
               <ServiceCard
                 key={index}
                 service={service}
-                onClick={() => router.push(`/services/${service.id}`)}
+                onClick={() => router.push(`/services/${service.slug}`)}
                 variants={itemVariants}
               />
             ))}
@@ -93,7 +136,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
                 <ServiceCard
                   key={index}
                   service={service}
-                  onClick={() => router.push(`/services/${service.id}`)}
+                  onClick={() => router.push(`/services/${service.slug}`)}
                   variants={itemVariants}
                 />
               ))}

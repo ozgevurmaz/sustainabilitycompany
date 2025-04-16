@@ -39,15 +39,13 @@ import {
   ArrowUp,
   ArrowDown,
   Leaf,
-  LucideIcon,
 } from "lucide-react";
 
 // Import the type definitions
 import { ServicesType } from "@/lib/types/types";
 import CustomCard from "../../../components/admin/CustomCard";
-import { dummyServices } from "@/lib/constant";
+import { ICON_OPTIONS } from "@/lib/constant";
 import SecondHeader from "@/components/admin/SecondHeader";
-import ServicesDialog from "@/components/admin/Services/ServicesDialog";
 import DeleteServiceDialog from "@/components/admin/Services/DeleteServicesDialog";
 
 export default function ServicesManagement() {
@@ -55,7 +53,6 @@ export default function ServicesManagement() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentService, setCurrentService] = useState<ServicesType | null>(null);
 
@@ -73,105 +70,176 @@ export default function ServicesManagement() {
   // Mock fetch services data (replace with actual API call)
   useEffect(() => {
     if (status !== "loading" && session?.user?.role === "admin") {
-      // Simulate API fetch with setTimeout
-      setTimeout(() => {
-        setServices(dummyServices);
-        setIsLoading(false);
-      }, 800);
+      fetchServices();
     }
   }, [status, session]);
 
-    // Fetch services data from the API
-    const fetchServices = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch('/api/services');
-        if (!response.ok) {
-          throw new Error('Failed to fetch services');
-        }
-        const data = await response.json();
-        
-        // Convert string icon names to component references
-        const processedServices = data.map((service: any) => ({
-          ...service,
-          icon: service.icon || Leaf
-        }));
-        
-        setServices(processedServices);
-      } catch (error) {
-        console.error('Error fetching services:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load services. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
+  // Fetch services data from the API
+  const fetchServices = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/services');
+      if (!response.ok) {
+        throw new Error('Failed to fetch services');
       }
-    };
+      const data = await response.json();
+      const sorted = data.sort((a:ServicesType, b:ServicesType) => a.order - b.order);
+      setServices(sorted);
+
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load services. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Filter and search services
   const filteredServices = services.filter(service => {
     return service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.description.toLowerCase().includes(searchTerm.toLowerCase());
+      service.description.toLowerCase().includes(searchTerm.toLowerCase())
   });
 
   // Get icon component based on name
-  const getIconComponent = (Icon:LucideIcon) => {
+  const getIconComponent = (icon: string) => {
+    const normalized = icon.trim();
+    const Icon = ICON_OPTIONS.find((i) => i.name === normalized)?.component;
     return Icon ? <Icon className="h-5 w-5" /> : <Leaf className="h-5 w-5" />;
   };
 
-  // Move service order up
-  const moveServiceUp = (id: string) => {
-    setServices(prev => {
-      const newServices = [...prev];
-      const index = newServices.findIndex(s => s.id === id);
-      if (index > 0) {
-        // Swap positions
-        [newServices[index], newServices[index - 1]] = [newServices[index - 1], newServices[index]];
-      }
-      return newServices;
-    });
+  // Move service
+  const swapServiceOrders = async (service1: ServicesType, service2: ServicesType) => {
+    try {
+      const updates = [
+        { slug: service1.slug, order: service2.order },
+        { slug: service2.slug, order: service1.order }
+      ];
 
-    toast({
-      title: "Service Order Updated",
-      description: "The service has been moved up in the order.",
-    });
+      console.log("Swapping service orders:", updates);
+
+      const response = await fetch("/api/services/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ updates })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to update order");
+      }
+
+      console.log("Reorder response:", data);
+      return true;
+
+    } catch (error) {
+      console.error("Error swapping service orders:", error);
+      toast({
+        title: "Reorder Error",
+        description: "Failed to update service order in database.",
+        variant: "destructive"
+      });
+      return false;
+    }
   };
 
-  // Move service order down
-  const moveServiceDown = (id: string) => {
-    setServices(prev => {
-      const newServices = [...prev];
-      const index = newServices.findIndex(s => s.id === id);
-      if (index < newServices.length - 1) {
-        // Swap positions
-        [newServices[index], newServices[index + 1]] = [newServices[index + 1], newServices[index]];
-      }
-      return newServices;
-    });
+  const moveServiceUp = async (slug: string) => {
+    const index = services.findIndex(s => s.slug === slug);
 
-    toast({
-      title: "Service Order Updated",
-      description: "The service has been moved down in the order.",
-    });
+    if (index <= 0) return;
+
+    try {
+      const serviceToMove = services[index];
+      const serviceAbove = services[index - 1];
+
+      const newServices = [...services];
+
+      [newServices[index], newServices[index - 1]] = [
+        newServices[index - 1],
+        newServices[index]
+      ];
+
+      setServices(newServices);
+
+      const success = await swapServiceOrders(serviceToMove, serviceAbove);
+
+      if (!success) {
+        setServices(services);
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Service moved up successfully"
+      });
+
+    } catch (error) {
+      console.error("Error moving service up:", error);
+      toast({
+        title: "Error",
+        description: "Failed to reorder service. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const moveServiceDown = async (slug: string) => {
+    const index = services.findIndex(s => s.slug === slug);
+
+    if (index < 0 || index >= services.length - 1) return;
+
+    try {
+      const serviceToMove = services[index];
+      const serviceBelow = services[index + 1];
+
+      const newServices = [...services];
+
+      [newServices[index], newServices[index + 1]] = [
+        newServices[index + 1],
+        newServices[index]
+      ];
+
+      setServices(newServices);
+
+      const success = await swapServiceOrders(serviceToMove, serviceBelow);
+
+      if (!success) {
+        setServices(services);
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Service moved down successfully"
+      });
+
+    } catch (error) {
+      console.error("Error moving service down:", error);
+      toast({
+        title: "Error",
+        description: "Failed to reorder service. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Handle add click - Open dialog with no service
   const handleAddClick = () => {
-    setCurrentService(null);
-    setIsDialogOpen(true);
+    router.push("/admin/services/new")
   };
-  
+
   // Handle edit click - Open dialog with the service to edit
   const handleEditClick = (service: ServicesType) => {
-    setCurrentService(service);
-    setIsDialogOpen(true);
+    router.push(`/admin/services/edit/${service.slug}`)
   };
 
   // Handle preview click
   const handlePreviewClick = (service: ServicesType) => {
-    window.open(`/services/${service.id}`, '_blank');
+    window.open(`/services/${service.slug}`, '_blank');
   };
 
   // Handle delete click
@@ -188,75 +256,6 @@ export default function ServicesManagement() {
     );
   }
 
-// Handle save service (create or update)
-const handleSaveService = async (serviceData: ServicesType) => {
-  try {
-    setIsLoading(true);
-   /*
-    // Convert icon component to string name for API
-    let iconName = "Leaf";
-    const iconConstructorName = serviceData.icon?.name;
-
-    if (iconConstructorName) {
-      iconName = iconConstructorName;
-    }
-    
-    const apiData = {
-      ...serviceData,
-      icon: iconName
-    };
-    
-    let response;
-    
-    if (currentService) {
-      // Update existing service
-      response = await fetch(`/api/services/${serviceData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(apiData),
-      });
-    } else {
-      // Create new service
-      response = await fetch('/api/services', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(apiData),
-      });
-    }
-    
-    if (!response.ok) {
-      throw new Error(currentService ? 'Failed to update service' : 'Failed to create service');
-    }
-    
-    // Refresh the services list
-    await fetchServices();
-    
-    toast({
-      title: currentService ? "Service Updated" : "Service Created",
-      description: `"${serviceData.title}" has been saved.`,
-    });
-    
-    setIsDialogOpen(false);
-    */
-  } catch (error) {
-    console.error('Error saving service:', error);
-    toast({
-      title: "Error",
-      description: `Failed to ${currentService ? 'update' : 'create'} service. Please try again.`,
-      variant: "destructive",
-    });
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-  const handleConfirmDelete = (id: string) => {
-    setServices((prev) => prev.filter((s) => s.id !== id));
-    toast({
-      title: "Service Deleted",
-      description: `"${currentService?.title}" has been deleted.`,
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -319,7 +318,7 @@ const handleSaveService = async (serviceData: ServicesType) => {
         {viewMode === "grid" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {filteredServices.map((service) => (
-              <Card key={service.id} className="overflow-hidden">
+              <Card key={service.slug} className="overflow-hidden">
                 <div className="relative h-40 bg-gray-100">
                   {service.imageUrl ? (
                     <div className="w-full h-full relative">
@@ -366,11 +365,11 @@ const handleSaveService = async (serviceData: ServicesType) => {
                             Preview
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => moveServiceUp(service.id)}>
+                          <DropdownMenuItem onClick={() => moveServiceUp(service.slug)}>
                             <ArrowUp className="mr-2 h-4 w-4" />
                             Move Up
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => moveServiceDown(service.id)}>
+                          <DropdownMenuItem onClick={() => moveServiceDown(service.slug)}>
                             <ArrowDown className="mr-2 h-4 w-4" />
                             Move Down
                           </DropdownMenuItem>
@@ -455,7 +454,7 @@ const handleSaveService = async (serviceData: ServicesType) => {
                     </TableRow>
                   ) : (
                     filteredServices.map((service, index) => (
-                      <TableRow key={service.id}>
+                      <TableRow key={service.slug}>
                         <TableCell>
                           <div className="flex flex-col items-center">
                             <span className="font-medium">{index + 1}</span>
@@ -464,7 +463,7 @@ const handleSaveService = async (serviceData: ServicesType) => {
                                 variant="ghost"
                                 size="sm"
                                 className="h-6 w-6 p-0"
-                                onClick={() => moveServiceUp(service.id)}
+                                onClick={() => moveServiceUp(service.slug)}
                                 disabled={index === 0}
                               >
                                 <ArrowUp className="h-3 w-3" />
@@ -473,7 +472,7 @@ const handleSaveService = async (serviceData: ServicesType) => {
                                 variant="ghost"
                                 size="sm"
                                 className="h-6 w-6 p-0"
-                                onClick={() => moveServiceDown(service.id)}
+                                onClick={() => moveServiceDown(service.slug)}
                                 disabled={index === services.length - 1}
                               >
                                 <ArrowDown className="h-3 w-3" />
@@ -535,20 +534,19 @@ const handleSaveService = async (serviceData: ServicesType) => {
         )}
       </main>
 
-      {/* Single Dialog for both Add and Edit */}
-      <ServicesDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        service={currentService}
-        onSave={handleSaveService}
-      />
-
       {/* Delete Dialog */}
       <DeleteServiceDialog
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
         service={currentService}
-        onDelete={handleConfirmDelete}
+        onDeleteSuccess={(updatedList) => {
+          setServices(updatedList);
+          toast({
+            title: "Service Deleted",
+            description: `"${currentService?.title}" has been deleted.`,
+          });
+          setIsDeleteDialogOpen(false);
+        }}
       />
     </div>
   );

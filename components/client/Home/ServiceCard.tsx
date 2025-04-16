@@ -1,10 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ServicesFormType } from "@/lib/types/types";
+import { ICON_OPTIONS } from "@/lib/constant";
+import { ServicesType } from "@/lib/types/types";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-const ServiceCard = ({ service, onClick, variants }:{service:ServicesFormType,onClick:()
+const ServiceCard = ({ service, onClick, variants }:{service:ServicesType,onClick:()
     =>void,variants:{}}) => {
+
+      const getIconByName = (name: string) => {
+        return ICON_OPTIONS.find((icon) => icon.name === name)?.component || ICON_OPTIONS[0];
+    };
+
+    const ServiceIcon = getIconByName(service.icon);
+
     return (
       <motion.div variants={variants}>
         <Card
@@ -17,7 +25,7 @@ const ServiceCard = ({ service, onClick, variants }:{service:ServicesFormType,on
                 style={{ backgroundColor: service.color }} 
                 className="w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110"
               >
-                <service.icon className="w-8 h-8 text-white" />
+                <ServiceIcon className="w-8 h-8 text-white" />
               </div>
               
               <h3 className="text-xl font-semibold text-gray-900 mb-3">{service.title}</h3>

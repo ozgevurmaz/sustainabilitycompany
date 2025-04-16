@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Service from "@/models/services";
 
-// Get a single service by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+// Get a single service by Slug
+export async function GET(req: Request, { params }: { params: { serviceSlug: string } }) {
   await connectToDB();
 
   try {
-    const service = await Service.findOne({ id: params.id });
+    const service = await Service.findOne({ slug: params.serviceSlug });
 
     if (!service) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
@@ -19,14 +19,14 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// Update a service by ID
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+// Update a service by Slug
+export async function PUT(req: Request, { params }: { params: { serviceSlug: string } }) {
   await connectToDB();
 
   try {
     const data = await req.json();
 
-    const updatedService = await Service.findOneAndUpdate({ id: params.id }, data, {
+    const updatedService = await Service.findOneAndUpdate({ slug: params.serviceSlug }, data, {
       new: true,
     });
 
@@ -41,12 +41,12 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 
-// Delete a service by ID
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+// Delete a service by Slug
+export async function DELETE(req: Request, { params }: { params: { serviceSlug: string } }) {
   await connectToDB();
 
   try {
-    const deletedService = await Service.findOneAndDelete({ id: params.id });
+    const deletedService = await Service.findOneAndDelete({ slug: params.serviceSlug });
 
     if (!deletedService) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });

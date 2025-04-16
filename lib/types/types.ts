@@ -1,6 +1,3 @@
-import { ComponentType } from "react";
-import { LucideIcon } from "lucide-react";
-
 export type HeroSectionType = {
     title: string;
     subtitle: string;
@@ -15,26 +12,16 @@ export type FormTypes = {
 }
 
 export type ServicesType = {
-    id: string;
     title: string;
+    slug: string;
     description: string;
     content: string;
     importance: string;
     benefits: string[];
     imageUrl: string;
-    icon: LucideIcon;
+    icon: string;
     color: string;
-}
-
-export type ServicesFormType = {
-    title: string;
-    description: string;
-    content: string;
-    importance: string;
-    benefits: string[];
-    imageUrl: string;
-    icon: LucideIcon;
-    color: string;
+    order?: number;
 }
 
 export type BlogType = {
@@ -69,25 +56,25 @@ export type TestimonialFormType = {
     imageUrl: string;
 }
 
-    export interface BlogPostType {
-        id: number;
-        title: string;
-        slug: string;
-        excerpt: string;
-        content: string;
-        categories: string[];
-        tags: string[] | string;
-        featuredImage: string;
-        status: "published" | "draft";
-        isPublished: boolean;
-        metaTitle: string;
-        metaDescription: string;
-        publishDate: string;
-        readTime: string;
-        views: number;
-        likes: number;
-        comments: number;
-    }
+export interface BlogPostType {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt: string;
+    content: string;
+    categories: string[];
+    tags: string[] | string;
+    featuredImage: string;
+    status: "published" | "draft";
+    isPublished: boolean;
+    metaTitle: string;
+    metaDescription: string;
+    publishDate: string;
+    readTime: string;
+    views: number;
+    likes: number;
+    comments: number;
+}
 
 export interface CategoryType {
     id: number;

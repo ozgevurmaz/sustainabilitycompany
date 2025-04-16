@@ -1,26 +1,64 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
-import { dummyServices } from "@/lib/constant";
+import { dummyServices, ICON_OPTIONS } from "@/lib/constant";
 import { ServicesType } from "@/lib/types/types";
 import ContactForm from "@/components/client/contactForm";
 import { ArrowLeft, Check, ExternalLink } from "lucide-react";
 import Image from "next/image";
+import { toast } from "@/hooks/use-toast";
+import LoadingPage from "@/components/LoadingPage";
 
 export default function ServicePage() {
     const router = useRouter();
     const params = useParams();
     const [service, setService] = useState<ServicesType | null>(null);
+    const [loading, setLoading] = useState<boolean>(false)
 
+    const slug = params.serviceSlug as string;
+    console.log(params)
     useEffect(() => {
-        if (params?.serviceId) {
-            const foundService = dummyServices.find((s) => s.id === params.serviceId);
-            setService(foundService || null);
+        if (slug) {
+            const fetchServiceData = async () => {
+                if (slug) {
+                    try {
+                        setLoading(true);
+
+                        const response = await fetch(`/api/services/${slug}`);
+
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch service data');
+                        }
+
+                        const serviceData = await response.json();
+                        setService(serviceData);
+
+
+                    } catch (err) {
+                        console.error('Error fetching service:', err);
+                        toast({
+                            title: "Error",
+                            description: "Failed to load service data",
+                            variant: "destructive"
+                        });
+                    } finally {
+                        setLoading(false);
+                    }
+                }
+            };
+
+            fetchServiceData();
         }
     }, [params?.serviceId]);
+
+    if (loading) {
+        return (
+            <LoadingPage />
+        )
+    }
 
     if (!service) {
         return (
@@ -42,8 +80,11 @@ export default function ServicePage() {
             </div>
         );
     }
+    const getIconByName = (name: string) => {
+        return ICON_OPTIONS.find((icon) => icon.name === name)?.component || ICON_OPTIONS[0];
+    };
 
-    const ServiceIcon = service.icon;
+    const ServiceIcon = getIconByName(service.icon);
 
     return (
         <div className="min-h-screen pb-16 m-0 w-full ">
@@ -63,7 +104,7 @@ export default function ServicePage() {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="relative h-[60vh]" 
+                className="relative h-[60vh]"
             >
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-full px-0">

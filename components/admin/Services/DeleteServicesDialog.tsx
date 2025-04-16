@@ -11,39 +11,59 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Trash2 } from "lucide-react";
+import { AlertCircle, Leaf, Trash2 } from "lucide-react";
 import { ServicesType } from "@/lib/types/types";
+import { ICON_OPTIONS } from "@/lib/constant";
+import { toast } from "@/hooks/use-toast";
 
 interface DeleteServiceDialogProps {
   isOpen: boolean;
   onClose: () => void;
   service: ServicesType | null;
-  onDelete: (id: string) => void;
+  onDeleteSuccess: (updatedList: ServicesType[]) => void;
 }
 
 export default function DeleteServiceDialog({
   isOpen,
   onClose,
   service,
-  onDelete,
+  onDeleteSuccess
 }: DeleteServiceDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
 
-  const handleDelete = async () => {
-    if (!service) return;
-    
-    setIsDeleting(true);
-    setError("");
+  const handleConfirmDelete = () => {
+    const deleteFunction = async () => {
+      try {
+        const response = await fetch(`/api/services/${service?.slug}`, {
+          method: "DELETE",
+        });
 
-    try {
-      onDelete(service.id);
-      onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete service");
-    } finally {
-      setIsDeleting(false);
-    }
+        if (!response.ok) {
+          throw new Error("Failed to delete service");
+        }
+
+        const newListResponse = await fetch("/api/services");
+        const updatedList = await newListResponse.json();
+        onDeleteSuccess(updatedList);
+
+
+        toast({
+          title: "Service Deleted",
+          description: `"${service?.title}" has been deleted.`,
+        });
+
+      } catch (error) {
+        console.error("Error deleting service:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete service.",
+          variant: "destructive",
+        });
+      }
+    };
+
+    deleteFunction()
   };
 
   // If no service is provided, don't render the dialog content
@@ -57,6 +77,8 @@ export default function DeleteServiceDialog({
       </DialogContent>
     </Dialog>
   );
+
+  const IconComponent = ICON_OPTIONS.find(i => i.name === service.icon)?.component || Leaf;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -78,12 +100,12 @@ export default function DeleteServiceDialog({
         <div className="bg-gray-50 p-4 rounded-md">
           <div className="flex items-center space-x-3 mb-2">
             <div className={`p-2 rounded-md ${service.color} bg-opacity-20`}>
-              {service.icon && <service.icon className="h-5 w-5" />}
+              <IconComponent className="h-5 w-5" />
             </div>
             <h3 className="font-medium">{service.title}</h3>
           </div>
           <p className="text-sm text-gray-600">{service.description}</p>
-          
+
           {service.benefits.length > 0 && (
             <div className="mt-3">
               <p className="text-xs font-medium text-gray-600">Benefits:</p>
@@ -116,7 +138,7 @@ export default function DeleteServiceDialog({
           <Button
             type="button"
             variant="destructive"
-            onClick={handleDelete}
+            onClick={handleConfirmDelete}
             disabled={isDeleting}
             className="gap-2"
           >
