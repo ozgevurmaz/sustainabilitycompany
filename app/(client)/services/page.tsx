@@ -3,7 +3,7 @@
 import React from 'react';
 import HeroSection from "@/components/client/Hero";
 import ServicesSection from "@/components/client/servicesSection";
-import { dummyBlog, dummyServices } from "@/lib/constant";
+import { dummyBlog } from "@/lib/constant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Check, Leaf, Recycle, Droplet, Sun, Wind, TreePine, Trash2 } from "lucide-react";

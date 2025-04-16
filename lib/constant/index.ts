@@ -195,111 +195,6 @@ export const COLOR_OPTIONS = [
 ] as const;
 
 
-export const dummyServices: ServicesType[] = [{
-    title: "Sustainability Audits",
-    slug: "sustainability-audits",
-    description: "Comprehensive evaluation of your organization's environmental impact and sustainability practices.",
-    content: "Our sustainability audits provide a detailed assessment of your company's environmental footprint, resource usage, and operational practices. We identify areas for improvement and provide actionable recommendations to enhance your sustainability performance.",
-    importance: "Understanding your current environmental impact is the first step toward meaningful change. Our audits establish a baseline and identify the most effective opportunities for improvement.",
-    benefits: [
-        "Environmental impact assessment",
-        "Resource efficiency analysis",
-        "Carbon footprint calculation",
-        "Waste management review",
-        "Detailed report with recommendations"
-    ],
-    imageUrl: "/images/sustainability.jpg",
-    icon: "Leaf",
-    color: `${COLOR_OPTIONS[7].hex}`,
-},
-{
-    title: "Green Building Consultation",
-    slug: "green-building-consultation",
-    description: "Expert guidance on sustainable building practices, materials, and certifications.",
-    content: "Our green building consultation services help you design, construct, or retrofit buildings to meet sustainability standards. We provide guidance on energy-efficient designs, sustainable materials, renewable energy integration, and certification processes like LEED or BREEAM.",
-    importance: "Buildings account for approximately 40% of global energy consumption and carbon emissions. Green building practices can drastically reduce this impact while creating healthier, more efficient spaces.",
-    benefits: [
-        "Sustainable design assessment",
-        "Energy efficiency modeling",
-        "Material selection guidance",
-        "Certification support (LEED, BREEAM)",
-        "ROI analysis for green features"
-    ],
-    imageUrl: "/images/sustainablitystrategies.jpg",
-    icon: "Building",
-    color: `${COLOR_OPTIONS[1].hex}`,
-},
-{
-    title: "Renewable Energy Implementation",
-    slug: "renewable-energy-implementation",
-    description: "Custom solutions for integrating renewable energy sources into your operations.",
-    content: "We help businesses transition to renewable energy sources such as solar, wind, or geothermal. Our services include feasibility studies, system design, vendor selection, installation oversight, and performance monitoring to ensure optimal energy production.",
-    importance: "Transitioning to renewable energy reduces carbon emissions, offers long-term cost savings, and provides resilience against energy price volatility and supply disruptions.",
-    benefits: [
-        "Renewable energy feasibility studies",
-        "System design and specification",
-        "Vendor selection assistance",
-        "Installation project management",
-        "Performance monitoring setup"
-    ],
-    imageUrl: "/images/sustainableenergy.jpg",
-    icon: "Sun",
-    color: `${COLOR_OPTIONS[5].hex}`,
-},
-{
-    title: "Carbon Offset Programs",
-    slug: "carbon-offset-programs",
-    description: "Develop and implement effective carbon offset strategies to achieve carbon neutrality.",
-    content: "Our carbon offset programs help organizations balance their carbon emissions through investment in environmental projects. We guide you through the process of measuring your carbon footprint, selecting appropriate offset projects, and verifying the impact of your investments.",
-    importance: "Carbon offsetting allows businesses to take immediate action on their unavoidable emissions while working on long-term reduction strategies, contributing to global climate goals.",
-    benefits: [
-        "Carbon footprint assessment",
-        "Offset strategy development",
-        "Project selection guidance",
-        "Verification and reporting",
-        "Marketing and communication support"
-    ],
-    imageUrl: "/images/carbonfootprint.jpg",
-    icon: "Recycle",
-    color: `${COLOR_OPTIONS[13].hex}`,
-},
-{
-    title: "Waste Reduction Strategies",
-    slug: "waste-reduction-strategies",
-    description: "Comprehensive waste audit and management plans to minimize waste and increase recycling.",
-    content: "Our waste reduction services help organizations minimize waste generation and maximize recycling efforts. We conduct detailed waste audits, identify reduction opportunities, design circular economy approaches, and implement effective waste management systems.",
-    importance: "Reducing waste not only minimizes environmental impact but also often leads to significant cost savings and can enhance brand reputation among increasingly eco-conscious consumers.",
-    benefits: [
-        "Waste audit and analysis",
-        "Reduction strategy development",
-        "Recycling program implementation",
-        "Staff training and education",
-        "Progress tracking and reporting"
-    ],
-    imageUrl: "/images/wastereduction.jpg",
-    icon: "Trash",
-    color: `${COLOR_OPTIONS[11].hex}`,
-},
-{
-    title: "Water Conservation",
-    slug: "water-conservation",
-    description: "Effective strategies to optimize water usage and reduce consumption across operations.",
-    content: "We help businesses identify and implement water-saving opportunities throughout their operations. Our approach includes comprehensive water audits, fixture upgrades, process improvements, rainwater harvesting, and behavior change initiatives.",
-    importance: "As water scarcity becomes more prevalent globally, improving water efficiency reduces environmental impact, ensures operational resilience, and often results in substantial cost savings.",
-    benefits: [
-        "Water usage audit",
-        "Efficiency improvement plan",
-        "Low-flow fixture recommendations",
-        "Process water recycling solutions",
-        "Employee awareness programs"
-    ],
-    imageUrl: "/images/waterfootprint.jpg",
-    icon: "Droplet",
-    color: `${COLOR_OPTIONS[2].hex}`,
-},
-];
-
-
 export const sections: HeroSectionType[] = [
     {
         title: "Future Footprint",
@@ -327,23 +222,6 @@ export const sections: HeroSectionType[] = [
         image: "/images/contact.jpg",
     }
 ]
-
-export const navItems = [
-    {
-        label: 'Services',
-        children: [
-            { label: 'Sustainability Audits', href: '/services/sustainability-audits' },
-            { label: 'Green Building Consultation', href: '/services/green-building-consultation' },
-            { label: 'Renewable Energy Implementation', href: '/services/renewable-energy-implementation' },
-            { label: 'Carbon Offset Programs', href: '/services/carbon-offset-programs' },
-            { label: 'Waste Reduction Strategies', href: '/services/waste-reduction-strategies' },
-            { label: 'Water Conservation', href: '/services/water-conservation' },
-        ],
-    },
-    { label: 'About', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
-];
 
 export const ICON_OPTIONS = [
     { name: "Leaf", component: Leaf },

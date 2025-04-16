@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
-import { dummyServices, ICON_OPTIONS } from "@/lib/constant";
+import { ICON_OPTIONS } from "@/lib/constant";
 import { ServicesType } from "@/lib/types/types";
 import ContactForm from "@/components/client/contactForm";
 import { ArrowLeft, Check, ExternalLink } from "lucide-react";

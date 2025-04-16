@@ -4,14 +4,52 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from 'lucide-react';
-import { usePathname } from 'next/navigation';
-import { navItems } from '@/lib/constant';
+import { ServicesType } from '@/lib/types/types';
+
+const navItems = [
+  {
+    label: 'Services',
+    children: [
+      { label: 'Sustainability Audits', href: '/services/sustainability-audits' },
+      { label: 'Green Building Consultation', href: '/services/green-building-consultation' },
+      { label: 'Renewable Energy Implementation', href: '/services/renewable-energy-implementation' },
+      { label: 'Carbon Offset Programs', href: '/services/carbon-offset-programs' },
+      { label: 'Waste Reduction Strategies', href: '/services/waste-reduction-strategies' },
+      { label: 'Water Conservation', href: '/services/water-conservation' },
+    ],
+  },
+  { label: 'About', href: '/about' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
 
 const Navbar = ({ isBg }: { isBg?: boolean }) => {
-  const pathname = usePathname()
 
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [serviceItems, setServiceItems] = useState([]);
+  const [servicesLoaded, setServicesLoaded] = useState(false);
+
+  const fetchServices = async () => {
+    if (servicesLoaded) return;
+
+    try {
+      const res = await fetch("/api/services");
+      const data = await res.json();
+
+      const formatted = data
+        .sort((a: ServicesType, b: ServicesType) => a.order - b.order)
+        .map((item: any) => ({
+          label: item.title,
+          href: `/services/${item.slug}`
+        }));
+
+      setServiceItems(formatted);
+      setServicesLoaded(true);
+    } catch (err) {
+      console.error("Failed to fetch services", err);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,11 +59,17 @@ const Navbar = ({ isBg }: { isBg?: boolean }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      fetchServices();
+    }
+  }, [isOpen]);
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 text-white ${isBg || isScrolled
-          ? "bg-green-700 backdrop-blur-md shadow-md"
-          : "bg-transparent"
+        ? "bg-green-700 backdrop-blur-md shadow-md"
+        : "bg-transparent"
         }`}
     >
       <div className="container mx-auto px-4">
@@ -45,9 +89,12 @@ const Navbar = ({ isBg }: { isBg?: boolean }) => {
                     <ChevronDown className="ml-1 h-4 w-4" />
 
                     {/* Dropdown */}
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
+                    <div
+                      className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300"
+                      onMouseEnter={fetchServices}
+                    >
                       <div className="py-2">
-                        {item.children.map((child, childIndex) => (
+                        {(item.label === "Services" ? serviceItems : item.children)?.map((child, childIndex) => (
                           <Link
                             key={childIndex}
                             href={child.href}
@@ -92,7 +139,7 @@ const Navbar = ({ isBg }: { isBg?: boolean }) => {
                       <ChevronDown className="ml-1 h-4 w-4" />
                     </div>
                     <div className="pl-8">
-                      {item.children.map((child, childIndex) => (
+                      {(item.label === "Services" ? serviceItems : item.children)?.map((child, childIndex) => (
                         <Link
                           key={childIndex}
                           href={child.href}
