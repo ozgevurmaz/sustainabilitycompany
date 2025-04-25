@@ -11,6 +11,7 @@ import { ArrowLeft, Check, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { toast } from "@/hooks/use-toast";
 import LoadingPage from "@/components/LoadingPage";
+import { getCachedServices, setCachedServices } from "@/lib/cache";
 
 export default function ServicePage() {
     const router = useRouter();
@@ -19,41 +20,52 @@ export default function ServicePage() {
     const [loading, setLoading] = useState<boolean>(false)
 
     const slug = params.serviceSlug as string;
-    console.log(params)
+
     useEffect(() => {
         if (slug) {
-            const fetchServiceData = async () => {
-                if (slug) {
-                    try {
-                        setLoading(true);
-
-                        const response = await fetch(`/api/services/${slug}`);
-
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch service data');
-                        }
-
-                        const serviceData = await response.json();
-                        setService(serviceData);
-
-
-                    } catch (err) {
-                        console.error('Error fetching service:', err);
-                        toast({
-                            title: "Error",
-                            description: "Failed to load service data",
-                            variant: "destructive"
-                        });
-                    } finally {
-                        setLoading(false);
-                    }
+          const fetchServiceData = async () => {
+            try {
+              setLoading(true);
+    
+              const cachedServices = getCachedServices();
+              if (cachedServices) {
+                const found = cachedServices.find((s) => s.slug === slug);
+                if (found) {
+                  console.log("Loaded from cache ✅");
+                  setService(found);
+                  return; 
                 }
-            };
+              }
 
-            fetchServiceData();
+              const response = await fetch(`/api/services/${slug}`);
+              if (!response.ok) {
+                throw new Error('Failed to fetch service data');
+              }
+              const serviceData = await response.json();
+              setService(serviceData);
+    
+              if (cachedServices) {
+                setCachedServices([...cachedServices, serviceData]);
+              } else {
+                setCachedServices([serviceData]);
+              }
+    
+            } catch (err) {
+              console.error('Error fetching service:', err);
+              toast({
+                title: "Error",
+                description: "Failed to load service data",
+                variant: "destructive"
+              });
+            } finally {
+              setLoading(false);
+            }
+          };
+    
+          fetchServiceData();
         }
-    }, [params?.serviceId]);
-
+      }, [slug]);
+      
     if (loading) {
         return (
             <LoadingPage />

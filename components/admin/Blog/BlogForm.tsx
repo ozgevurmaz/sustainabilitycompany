@@ -1,5 +1,6 @@
 "use client"
-import { FormEvent, ChangeEvent, useState, useEffect, useCallback } from "react";
+
+import { ChangeEvent, useState, useEffect, useCallback } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,7 +34,7 @@ import {
   Type,
   X
 } from "lucide-react";
-import { formatTags, generateSlug } from "@/lib/actions";
+import { formatTags, generateSlug } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { blogPostSchema } from "@/lib/Schema/blog";
@@ -44,6 +45,7 @@ import { AddCategoryDialog } from "./AddCategoryDialog";
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from "@tiptap/extension-underline";
+import { getCachedBlogs, getCachedCategories, setCachedBlogs } from "@/lib/cache";
 
 interface BlogFormProps {
   isEdit?: boolean;
@@ -114,6 +116,20 @@ export function BlogForm({
       if (isEdit && slug) {
         try {
           setLoading(true);
+
+          const cachedBlogs = getCachedBlogs();
+
+          if (cachedBlogs) {
+            const found = cachedBlogs.find(c => c.slug === slug)
+            if (found) {
+              setBlog(found);
+              setForm(found);
+              setImage(found.featuredImage);
+              setOriginalSlug(found.slug);
+              return;
+            }
+          }
+
           const response = await fetch(`/api/blog/${slug}`);
 
           if (!response.ok) {
@@ -143,6 +159,14 @@ export function BlogForm({
 
   // Fetch categories data
   useEffect(() => {
+
+    const cachedCategories = getCachedCategories();
+
+    if (cachedCategories) {
+      setCategories(cachedCategories)
+      return
+    }
+
     const fetchCategories = async () => {
       try {
         const response = await fetch('/api/categories');
@@ -164,8 +188,6 @@ export function BlogForm({
       updateForm("featuredImage", image);
     }
   }, [image]);
-
-  useEffect(() => { console.log(form.content) }, [form])
 
   const title = isEdit ? "Edit Blog Post" : "Create New Blog Post";
   const description = isEdit
@@ -293,6 +315,7 @@ export function BlogForm({
         throw new Error(errorData.message || 'Failed to save blog');
       }
 
+      setCachedBlogs(null);
       const savedBlog = await response.json();
 
       toast({
@@ -314,7 +337,7 @@ export function BlogForm({
         const response = await fetch(`/api/blog/${originalSlug}`, {
           method: "DELETE",
         });
-
+        setCachedBlogs(null);
         if (!response.ok) {
           throw new Error("Failed to delete blog");
         }
@@ -323,6 +346,7 @@ export function BlogForm({
           title: "Blog Post Deleted",
           description: `"${blog?.title}" has been deleted.`,
         });
+
       } catch (error) {
         console.error("Error deleting blog:", error);
         toast({

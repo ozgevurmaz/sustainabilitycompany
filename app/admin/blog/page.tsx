@@ -57,6 +57,7 @@ import CustomCard from "../../../components/admin/CustomCard";
 import Image from "next/image";
 import { PublishToggleDialog } from "@/components/admin/Blog/PublishToggleDialog";
 import { DeleteCategoryDialog } from "@/components/admin/Blog/DeleteCategory";
+import { getCachedBlogs, getCachedCategories } from "@/lib/cache";
 
 export default function BlogManagement() {
   const { data: session, status } = useSession();
@@ -86,14 +87,21 @@ export default function BlogManagement() {
 
   useEffect(() => {
     if (status !== "loading" && session?.user?.role === "admin") {
-      fetchBlogPosts();
-      fetchCategories();
+      loadBlogs();
+      loadCategories();
     }
   }, [status, session]);
 
   // Fetch blog posts data from the API
-  const fetchBlogPosts = async () => {
+  const loadBlogs = async () => {
     setIsLoading(true);
+    const cachedBlogs = getCachedBlogs();
+
+    if (cachedBlogs) {
+      setBlogPosts(cachedBlogs);
+      return;
+    }
+
     try {
       const response = await fetch('/api/blog');
       if (!response.ok) {
@@ -117,8 +125,15 @@ export default function BlogManagement() {
   };
 
   // Fetch categories data
-  const fetchCategories = async () => {
+  const loadCategories = async () => {
     try {
+      const cachedCategories = getCachedCategories();
+
+      if (cachedCategories) {
+        setCategories(cachedCategories)
+        return
+      }
+
       const response = await fetch('/api/categories');
       if (!response.ok) {
         throw new Error('Failed to fetch categories');

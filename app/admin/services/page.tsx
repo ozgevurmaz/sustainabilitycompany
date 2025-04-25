@@ -47,6 +47,8 @@ import CustomCard from "../../../components/admin/CustomCard";
 import { ICON_OPTIONS } from "@/lib/constant";
 import SecondHeader from "@/components/admin/SecondHeader";
 import DeleteServiceDialog from "@/components/admin/Services/DeleteServicesDialog";
+import { fetchServices } from "@/lib/actions";
+import { setCachedServices } from "@/lib/cache";
 
 export default function ServicesManagement() {
   const { data: session, status } = useSession();
@@ -69,24 +71,17 @@ export default function ServicesManagement() {
 
   useEffect(() => {
     if (status !== "loading" && session?.user?.role === "admin") {
-      fetchServices();
+      loadServices();
     }
   }, [status, session]);
 
   // Fetch services data from the API
-  const fetchServices = async () => {
+  const loadServices = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/services');
-      if (!response.ok) {
-        throw new Error('Failed to fetch services');
-      }
-      const data = await response.json();
-      const sorted = data.sort((a:ServicesType, b:ServicesType) => a.order - b.order);
-      setServices(sorted);
-
-    } catch (error) {
-      console.error('Error fetching services:', error);
+      const data = await fetchServices();
+      setServices(data)
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to load services. Please try again.",
@@ -95,7 +90,7 @@ export default function ServicesManagement() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   // Filter and search services
   const filteredServices = services.filter(service => {
@@ -118,8 +113,6 @@ export default function ServicesManagement() {
         { slug: service2.slug, order: service1.order }
       ];
 
-      console.log("Swapping service orders:", updates);
-
       const response = await fetch("/api/services/reorder", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -132,7 +125,7 @@ export default function ServicesManagement() {
         throw new Error(data.error || "Failed to update order");
       }
 
-      console.log("Reorder response:", data);
+      setCachedServices(null);
       return true;
 
     } catch (error) {

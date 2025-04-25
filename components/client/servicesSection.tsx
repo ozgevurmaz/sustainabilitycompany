@@ -9,6 +9,7 @@ import { ArrowRight } from 'lucide-react';
 import ServiceCard from './Home/ServiceCard';
 import { toast } from '@/hooks/use-toast';
 import LoadingPage from '../LoadingPage';
+import { fetchServices } from '@/lib/actions';
 
 interface ServicesSectionProps {
   title?: string;
@@ -39,31 +40,12 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
   };
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const loadServices = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('/api/services');
-        if (!response.ok) {
-          throw new Error('Failed to fetch services');
-        }
-        let data = await response.json();
-
-        if (filter) {
-          const lowerFilter = filter.toLowerCase();
-          data = data.filter((service: ServicesType) =>
-            service.title.toLowerCase().includes(lowerFilter) ||
-            service.description.toLowerCase().includes(lowerFilter) ||
-            service.benefits.some(benefit =>
-              benefit.toLowerCase().includes(lowerFilter)
-            )
-          );
-        }
-        
-        const sorted = data.sort((a: ServicesType, b: ServicesType) => a.order - b.order);
-        setServices(sorted);
-
-      } catch (error) {
-        console.error('Error fetching services:', error);
+        const data = await fetchServices(filter);
+        setServices(data)
+      } catch (err) {
         toast({
           title: "Error",
           description: "Failed to load services. Please try again.",
@@ -72,9 +54,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
       } finally {
         setIsLoading(false);
       }
-    };
-    fetchServices();
-  }, [])
+    }
+
+    loadServices();
+  }, [filter])
 
 
   const itemVariants = {

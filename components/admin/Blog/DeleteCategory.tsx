@@ -13,9 +13,10 @@ import {
     Card,
     CardContent
 } from "@/components/ui/card";
-import {  CategoryType } from "@/lib/types/types";
+import { CategoryType } from "@/lib/types/types";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { setCachedCategories } from "@/lib/cache";
 
 
 interface DeleteDialogProps {
@@ -48,7 +49,7 @@ export function DeleteCategoryDialog({
                 const newListResponse = await fetch("/api/categories");
                 const updatedList = await newListResponse.json();
                 onDeleteSuccess(updatedList);
-
+                setCachedCategories(null)
 
                 toast({
                     title: "Category Deleted",

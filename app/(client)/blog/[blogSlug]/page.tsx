@@ -10,6 +10,7 @@ import { BlogPostType, CategoryType } from '@/lib/types/types'
 import { toast } from '@/hooks/use-toast'
 import LoadingPage from '@/components/LoadingPage'
 import BlogCard from '@/components/client/Blog/BlogCard'
+import { getCachedPublishedBlogs } from '@/lib/cache'
 
 const BlogPostView = () => {
   const params = useParams()
@@ -21,14 +22,25 @@ const BlogPostView = () => {
 
   useEffect(() => {
     if (blogSlug) {
-      fetchBlog();
+      loadBlog();
     }
   }, [])
 
-  const fetchBlog = async () => {
+  const loadBlog = async () => {
     if (blogSlug) {
       try {
         setLoading(true);
+
+        const cachedPBlogs = getCachedPublishedBlogs()
+
+        if (cachedPBlogs) {
+          const found = cachedPBlogs.find(b => b.slug === blogSlug);
+          if(found){
+            setPost(found);
+            return;
+          }
+        }
+
         const res = await fetch(`/api/blog/${blogSlug}`)
         if (!res.ok) {
           throw new Error("Failed to fecth blog post data")
@@ -36,7 +48,7 @@ const BlogPostView = () => {
 
         const data = await res.json();
         setPost(data)
-        setLoading(false)
+
       } catch (err) {
         console.log("Error fetching blog:", err)
         toast({
@@ -44,6 +56,8 @@ const BlogPostView = () => {
           description: "Failed to load blog post data",
           variant: "destructive"
         });
+      } finally {
+        setLoading(false)
       }
     }
   }

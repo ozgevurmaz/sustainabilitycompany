@@ -12,24 +12,28 @@ import InformationCards from "@/components/client/Home/InformationCards";
 import BlogCard from "@/components/client/Blog/BlogCard";
 import { BlogPostType } from "@/lib/types/types";
 import { toast } from "@/hooks/use-toast";
-import { dummyCategories } from "@/lib/constant";
+import { getCachedPublishedBlogs } from "@/lib/cache";
+import { fetchPublishedBlogs } from "@/lib/actions";
+import LoadingPage from "@/components/LoadingPage";
+
 
 export default function Home() {
   const [posts, setPosts] = useState<BlogPostType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchBlogPosts = async () => {
+  const loadBlogPosts = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/blog/client');
-      if (!response.ok) {
-        throw new Error('Failed to fetch blog posts');
+
+      const cachedBlogs = getCachedPublishedBlogs();
+
+      if (cachedBlogs) {
+        setPosts(cachedBlogs);
+        return;
       }
-      const data = await response.json();
-      const sorted = data.sort((a: BlogPostType, b: BlogPostType) =>
-        new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime()
-      );
-      setPosts(sorted);
+
+      const response = await fetchPublishedBlogs();
+      setPosts(response);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       toast({
@@ -43,8 +47,12 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchBlogPosts();
+    loadBlogPosts();
   }, []);
+
+  if (isLoading) {
+    return <LoadingPage />
+  }
 
   return (
     <div className="min-h-screen">
@@ -169,7 +177,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.slice(0, 3).map((post) => (
-              <BlogCard post={post} key={post.slug}  />
+              <BlogCard post={post} key={post.slug} />
             ))}
           </div>
 
@@ -185,4 +193,8 @@ export default function Home() {
       </section>
     </div>
   );
+}
+
+function getCachedPublisedBlogs() {
+  throw new Error("Function not implemented.");
 }

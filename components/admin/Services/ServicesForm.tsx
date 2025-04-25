@@ -25,17 +25,19 @@ import { useToast } from "@/hooks/use-toast";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { ServicesType } from "@/lib/types/types";
 import { COLOR_OPTIONS, ICON_OPTIONS } from "@/lib/constant";
-import { generateSlug } from "@/lib/actions";
+import { generateSlug } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { serviceSchema } from "@/lib/Schema/services";
 import LoadingPage from "@/components/LoadingPage";
+import { getCachedServices, setCachedServices } from "@/lib/cache";
 
 interface ServicesFormProps {
   isEdit: boolean;
 }
 
 const DEFAULT_SERVICE: ServicesType = {
+  _id: "",
   title: "",
   slug: "",
   description: "",
@@ -73,17 +75,43 @@ export default function ServicesForm({
       if (isEdit && slug) {
         try {
           setLoading(true);
+    
+          const cachedServices = getCachedServices();
+          if (cachedServices) {
+            const found = cachedServices.find((s) => s.slug === slug);
+            if (found) {
+              setForm(found);
+              setImage(found.imageUrl);
+              setService(found);
+              setOriginalSlug(found.slug);
+              return;
+            }
+          }
+    
           const response = await fetch(`/api/services/${slug}`);
-
           if (!response.ok) {
             throw new Error('Failed to fetch service data');
           }
-
           const serviceData = await response.json();
-          setService(serviceData);
           setForm(serviceData);
+          setService(serviceData);
+          setImage(serviceData.imageUrl);
           setOriginalSlug(serviceData.slug);
-          setImage(serviceData.imageUrl || "");
+    
+          if (cachedServices) {
+            const isExisting = cachedServices.some((s) => s.slug === serviceData.slug);
+            if (isExisting) {
+              const updatedCache = cachedServices.map((s) =>
+                s.slug === serviceData.slug ? serviceData : s
+              );
+              setCachedServices(updatedCache);
+            } else {
+              setCachedServices([...cachedServices, serviceData]);
+            }
+          } else {
+            setCachedServices([serviceData]);
+          }
+    
         } catch (err) {
           console.error('Error fetching service:', err);
           toast({
@@ -96,6 +124,7 @@ export default function ServicesForm({
         }
       }
     };
+    
 
     fetchServiceData();
   }, [isEdit, slug, toast]);
@@ -116,7 +145,7 @@ export default function ServicesForm({
     // Clear error for this field when it's updated
     if (formErrors[field]) {
       setFormErrors(prev => {
-        const newErrors = {...prev};
+        const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
       });
@@ -128,11 +157,11 @@ export default function ServicesForm({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const title = e.target.value;
       setForm((prev) => ({ ...prev, title, slug: generateSlug(title) }));
-      
+
       // Clear title and slug errors when title changes
       if (formErrors.title || formErrors.slug) {
         setFormErrors(prev => {
-          const newErrors = {...prev};
+          const newErrors = { ...prev };
           delete newErrors.title;
           delete newErrors.slug;
           return newErrors;
@@ -149,11 +178,11 @@ export default function ServicesForm({
         benefits: [...prev.benefits, benefit.trim()],
       }));
       setNewBenefit("");
-      
+
       // Clear benefits error if it exists
       if (formErrors.benefits) {
         setFormErrors(prev => {
-          const newErrors = {...prev};
+          const newErrors = { ...prev };
           delete newErrors.benefits;
           return newErrors;
         });
@@ -181,7 +210,7 @@ export default function ServicesForm({
   // Helper component to display field errors
   const FormErrorMessage = ({ field }: { field: string }) => {
     if (!formErrors[field]) return null;
-    
+
     return (
       <p className="text-sm text-red-500 mt-1">
         {formErrors[field]}
@@ -197,7 +226,7 @@ export default function ServicesForm({
     setError("");
 
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    
+
     const rawData = {
       title: formData.get("title") as string,
       slug: formData.get("slug") as string || form.slug,
@@ -209,36 +238,33 @@ export default function ServicesForm({
       icon: formData.get("icon") as string || form.icon,
       color: formData.get("color") as string || form.color,
     };
-  
+
     const result = serviceSchema.safeParse(rawData);
-    
+
     if (!result.success) {
       // Transform Zod errors into field-specific error messages
       const errors = result.error.flatten().fieldErrors;
       const newFormErrors: Record<string, string> = {};
-      
+
       // Process each field with errors
       Object.entries(errors).forEach(([field, messages]) => {
         if (messages && messages.length > 0) {
           newFormErrors[field] = messages[0];
         }
       });
-      
+
       setFormErrors(newFormErrors);
-      
-      // Set a general error message
+
       setError("Please correct the highlighted errors");
-      
-      // Scroll to the top of the form to show the error message
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
+
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Make API call based on whether we're creating or updating
       const endpoint = isEdit
         ? `/api/services/${originalSlug}`
         : '/api/services';
@@ -260,18 +286,19 @@ export default function ServicesForm({
 
       const savedService = await response.json();
 
-      // Show success toast
       toast({
         title: isEdit ? "Service Updated" : "Service Created",
         description: `Successfully ${isEdit ? 'updated' : 'created'} ${form.title}`,
         variant: "default"
       });
 
-      // Redirect to the services list page on success
+      setCachedServices(null);
+
       router.push('/admin/services');
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save service");
     } finally {
+
       setIsSubmitting(false);
     }
   };
@@ -286,7 +313,7 @@ export default function ServicesForm({
         if (!response.ok) {
           throw new Error("Failed to delete service");
         }
-
+        setCachedServices(null);
         toast({
           title: "Service Deleted",
           description: `"${service?.title}" has been deleted.`,
@@ -320,8 +347,8 @@ export default function ServicesForm({
           )}
         </div>
 
-        {loading ? (
-          <LoadingPage/>
+        {loading || !service._id ? (
+          <LoadingPage />
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -404,7 +431,7 @@ export default function ServicesForm({
               <Label className="text-sm font-medium">Benefits</Label>
               <div className="flex gap-2">
                 <Input
-                  name="benefitInput" // Changed from benefits to avoid conflict with the actual benefits array
+                  name="benefitInput"
                   value={newBenefit}
                   onChange={(e) => setNewBenefit(e.target.value)}
                   onKeyDown={handleBenefitKeyPress}

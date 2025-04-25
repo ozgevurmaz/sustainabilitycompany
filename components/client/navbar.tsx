@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { ServicesType } from '@/lib/types/types';
+import { fetchServices } from '@/lib/actions';
 
 const navItems = [
   {
@@ -30,26 +31,24 @@ const Navbar = ({ isBg }: { isBg?: boolean }) => {
   const [serviceItems, setServiceItems] = useState([]);
   const [servicesLoaded, setServicesLoaded] = useState(false);
 
-  const fetchServices = async () => {
-    if (servicesLoaded) return;
-
-    try {
-      const res = await fetch("/api/services");
-      const data = await res.json();
-
-      const formatted = data
-        .sort((a: ServicesType, b: ServicesType) => a.order - b.order)
-        .map((item: any) => ({
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        const data = await fetchServices();
+        const formatted = data.map((item: any) => ({
           label: item.title,
-          href: `/services/${item.slug}`
+          href: `/services/${item.slug}`,
         }));
+        setServiceItems(formatted);
+        setServicesLoaded(true);
+      } catch (error) {
+        console.log("Failed to load services", error);
+      }
+    };
 
-      setServiceItems(formatted);
-      setServicesLoaded(true);
-    } catch (err) {
-      console.error("Failed to fetch services", err);
-    }
-  };
+    loadServices();
+  }, []);
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,11 +58,7 @@ const Navbar = ({ isBg }: { isBg?: boolean }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchServices();
-    }
-  }, [isOpen]);
+
 
   return (
     <nav
@@ -91,7 +86,6 @@ const Navbar = ({ isBg }: { isBg?: boolean }) => {
                     {/* Dropdown */}
                     <div
                       className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300"
-                      onMouseEnter={fetchServices}
                     >
                       <div className="py-2">
                         {(item.label === "Services" ? serviceItems : item.children)?.map((child, childIndex) => (

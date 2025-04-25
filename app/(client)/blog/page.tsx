@@ -11,6 +11,8 @@ import BlogCard from "@/components/client/Blog/BlogCard";
 import { BlogPostType, CategoryType } from "@/lib/types/types";
 import { toast } from "@/hooks/use-toast";
 import LoadingPage from "@/components/LoadingPage";
+import { fetchCategories, fetchPublishedBlogs } from "@/lib/actions";
+import { getCachedCategories, getCachedPublishedBlogs } from "@/lib/cache";
 
 export default function Blog() {
     const [posts, setPosts] = useState<BlogPostType[]>([]);
@@ -19,37 +21,38 @@ export default function Blog() {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const fetchBlogPosts = async () => {
+
+    const loadBlogs = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch('/api/blog/client');
-            if (!response.ok) {
-                throw new Error('Failed to fetch blog posts');
+            const cached = getCachedPublishedBlogs();
+            if (cached) {
+                setPosts(cached);
+                return;
             }
-            const data = await response.json();
-            const sorted = data.sort((a: BlogPostType, b: BlogPostType) =>
-                new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime()
-            );
-            setPosts(sorted);
+
+            const data = await fetchPublishedBlogs();
+            setPosts(data)
         } catch (error) {
-            console.error('Error fetching blog posts:', error);
             toast({
                 title: "Error",
-                description: "Failed to load blog posts.",
+                description: "Failed to load services. Please try again.",
                 variant: "destructive",
             });
         } finally {
             setIsLoading(false);
         }
-    };
+    }
 
-    const fetchCategories = async () => {
+    const loadCategories = async () => {
         try {
-            const response = await fetch('/api/categories');
-            if (!response.ok) {
-                throw new Error('Failed to fetch categories');
+            const cached = getCachedCategories();
+            if (cached) {
+                setCategories(cached);
+                return;
             }
-            const data = await response.json();
+
+            const data = await fetchCategories();
             setCategories(data);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -57,8 +60,8 @@ export default function Blog() {
     };
 
     useEffect(() => {
-        fetchBlogPosts();
-        fetchCategories();
+        loadBlogs();
+        loadCategories();
     }, []);
 
     if (isLoading) {
@@ -75,14 +78,14 @@ export default function Blog() {
     const filteredPosts = posts.filter((post) => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-        
+
         // Check if the selected category ID exists in the post's categories array
-        const matchesCategory = selectedCategory === "All" || 
+        const matchesCategory = selectedCategory === "All" ||
             post.categories.some(categoryId => {
                 const category = categories.find(cat => cat._id === categoryId);
                 return category && category.name === selectedCategory;
             });
-            
+
         return matchesSearch && matchesCategory;
     });
 
@@ -113,11 +116,10 @@ export default function Blog() {
                         <div className="flex flex-wrap gap-2 justify-center md:justify-end">
                             <button
                                 onClick={() => setSelectedCategory("All")}
-                                className={`px-3 py-1 text-sm rounded-full transition-all ${
-                                    selectedCategory === "All"
+                                className={`px-3 py-1 text-sm rounded-full transition-all ${selectedCategory === "All"
                                     ? "bg-green-600 text-white"
                                     : "bg-white text-gray-700 hover:bg-green-100"
-                                }`}
+                                    }`}
                             >
                                 All
                             </button>
@@ -125,11 +127,10 @@ export default function Blog() {
                                 <button
                                     key={category._id}
                                     onClick={() => setSelectedCategory(category.name)}
-                                    className={`px-3 py-1 text-sm rounded-full transition-all ${
-                                        selectedCategory === category.name
+                                    className={`px-3 py-1 text-sm rounded-full transition-all ${selectedCategory === category.name
                                         ? "bg-green-600 text-white"
                                         : "bg-white text-gray-700 hover:bg-green-100"
-                                    }`}
+                                        }`}
                                 >
                                     {category.name}
                                 </button>
@@ -159,7 +160,7 @@ export default function Blog() {
                                     <div>
                                         <div className="mb-4 flex flex-wrap gap-2">
                                             {featuredPost.categories.map((categoryId) => (
-                                                <span 
+                                                <span
                                                     key={categoryId}
                                                     className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium"
                                                 >
@@ -206,7 +207,7 @@ export default function Blog() {
                     {filteredPosts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filteredPosts.map((post) => (
-                                <BlogCard post={post} key={post.slug}/>
+                                <BlogCard post={post} key={post.slug} />
                             ))}
                         </div>
                     ) : (
@@ -251,4 +252,8 @@ export default function Blog() {
             </section>
         </div>
     );
+}
+
+function fetchBlogPosts() {
+    throw new Error("Function not implemented.");
 }

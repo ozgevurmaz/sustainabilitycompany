@@ -16,6 +16,7 @@ import {
 import { BlogPostType } from "@/lib/types/types";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { setCachedBlogs } from "@/lib/cache";
 
 
 interface DeleteDialogProps {
@@ -41,6 +42,7 @@ export function DeleteBlogDialog({
           method: "DELETE",
         });
 
+        setCachedBlogs(null);
         if (!response.ok) {
           throw new Error("Failed to delete blog post");
         }

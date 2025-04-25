@@ -13,6 +13,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { CategoryType } from "@/lib/types/types";
+import { setCachedCategories } from "@/lib/cache";
 
 interface AddCategoriesDialogProps {
     open: boolean;
@@ -51,10 +52,11 @@ export function AddCategoryDialog({ open, onClose, onAddCategory }: AddCategorie
 
             const newCategory = await response.json();
             onAddCategory(newCategory);
+            setCachedCategories(null)
             setCategoryName("");
             onClose();
-        } catch (err) {
-            setError(err.message || "Failed to add category");
+        } catch (error) {
+            setError(error.message || "Failed to add category");
         } finally {
             setIsSubmitting(false);
         }

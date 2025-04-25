@@ -10,26 +10,33 @@ import BlogCard from '@/components/client/Blog/BlogCard';
 import Link from 'next/link';
 import { BlogPostType } from '@/lib/types/types';
 import { toast } from '@/hooks/use-toast';
+import { getCachedPublishedBlogs } from '@/lib/cache';
+import { fetchBlogs } from '@/lib/actions';
 
 export default function Services() {
   const [posts, setPosts] = useState<BlogPostType[] | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const CASE_STUDY_ID = "68079fc8d37750ef1b01dc94";
   useEffect(() => {
-    fetchBlogs();
+    loadBlogs();
   }, [])
 
-  const fetchBlogs = async () => {
+  const loadBlogs = async () => {
 
     try {
       setLoading(true);
-      const res = await fetch(`/api/blog`);
-      if (!res.ok) {
-        throw new Error("Failed to fetch blog post data");
+
+      const cachedPBlogs = getCachedPublishedBlogs();
+      if (cachedPBlogs) {
+        const filtered = cachedPBlogs.filter((d: BlogPostType) =>
+          d.categories.includes(CASE_STUDY_ID)
+        );
+        setPosts(filtered);
+        return;
       }
 
-      const data = await res.json();
-
+      const data = await fetchBlogs();
+      
       const filtered = data.filter((d: BlogPostType) =>
         d.categories.includes(CASE_STUDY_ID)
       );
