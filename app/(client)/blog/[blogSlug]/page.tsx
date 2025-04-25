@@ -1,31 +1,108 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '@/components/client/navbar'
-import { dummyBlog } from '@/lib/constant'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Calendar, Clock, Eye, Heart, MessageCircle, User } from 'lucide-react'
+import { Calendar, Clock } from 'lucide-react'
+import { BlogPostType, CategoryType } from '@/lib/types/types'
+import { toast } from '@/hooks/use-toast'
+import LoadingPage from '@/components/LoadingPage'
+import BlogCard from '@/components/client/Blog/BlogCard'
 
 const BlogPostView = () => {
   const params = useParams()
   const blogSlug = decodeURIComponent(params.blogSlug as string)
-  const post = dummyBlog.find((b) => b.slug === blogSlug)
-  
-  // Filter for related posts based on categories or tags
-  const relatedPosts = dummyBlog
-    .filter((p) => p.slug !== blogSlug)
-    .filter((p) => {
-      // Find posts with matching categories or tags
-      if (post?.categories) {
-        return p.categories.some(cat => 
-          post.categories.includes(cat)
-        )
+  const [post, setPost] = useState<BlogPostType | null>(null)
+  const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [categories, setCategories] = useState<CategoryType[]>([])
+
+  useEffect(() => {
+    if (blogSlug) {
+      fetchBlog();
+    }
+  }, [])
+
+  const fetchBlog = async () => {
+    if (blogSlug) {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/blog/${blogSlug}`)
+        if (!res.ok) {
+          throw new Error("Failed to fecth blog post data")
+        }
+
+        const data = await res.json();
+        setPost(data)
+        setLoading(false)
+      } catch (err) {
+        console.log("Error fetching blog:", err)
+        toast({
+          title: "Error",
+          description: "Failed to load blog post data",
+          variant: "destructive"
+        });
       }
-      return true // Fallback if no categories
-    })
-    .slice(0, 3) // Limit to 3 related posts
+    }
+  }
+  const fetchCat = async () => {
+    try {
+      const response = await fetch('/api/categories');
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories');
+      }
+      const data = await response.json();
+      setCategories(data)
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchRelatedPosts();
+    fetchCat();
+  }, [post])
+
+  const fetchRelatedPosts = async () => {
+
+    const cats = post?.categories;
+    const tags = post?.tags;
+
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/blog`)
+      if (!res.ok) {
+        throw new Error("Failed to fecth blog posts data")
+      }
+      const data = await res.json();
+      const filtered = data.filter((d: BlogPostType) => {
+        const hasCommonCategory = d.categories?.some((cat: string) => cats?.includes(cat));
+        const hasCommonTag = d.tags?.some((tag: string) => tags?.includes(tag));
+        return (hasCommonCategory || hasCommonTag) && d._id !== post?._id;
+      });
+
+      setRelatedPosts(filtered)
+      setLoading(false)
+    } catch (err) {
+      console.log("Error fetching blogs:", err)
+      toast({
+        title: "Error",
+        description: "Failed to load blog posts data",
+        variant: "destructive"
+      });
+    }
+  }
+
+  if (loading) {
+    return <LoadingPage />
+  }
+
+  const findCategoryName = (categoryId: string) => {
+    const category = categories.find(cat => cat._id === categoryId);
+    return category?.name;
+  };
 
   if (!post) {
     return (
@@ -44,11 +121,11 @@ const BlogPostView = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar isBg={true} />
-      
+
       {/* Hero Section */}
       <div className="w-full h-[50vh] relative pt-16">
-        <Image 
-          src={post.featuredImage || '/placeholder-image.jpg'} 
+        <Image
+          src={post.featuredImage || '/placeholder-image.jpg'}
           alt={post.title}
           fill
           className="object-cover brightness-75"
@@ -60,7 +137,7 @@ const BlogPostView = () => {
             <div className="flex items-center space-x-2 mb-3">
               {post.categories && post.categories.map((category, index) => (
                 <span key={index} className="bg-green-600 px-3 py-1 text-xs rounded-full">
-                  {category}
+                  {findCategoryName(category)}
                 </span>
               ))}
             </div>
@@ -78,96 +155,39 @@ const BlogPostView = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12 max-w-4xl">
-        <div className="bg-white rounded-lg shadow-sm p-6 md:p-10">          
+        <div className="bg-white rounded-lg shadow-sm p-6 md:p-10">
           {/* Blog content */}
           <div className="prose prose-lg max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div dangerouslySetInnerHTML={{ __html: post.content }} className='blog-content' />
           </div>
-          
+
           {/* Tags */}
-          {post.tags && post.tags.length > 0 && (
+          {Array.isArray(post.tags) && post.tags.length > 0 && (
             <div className="mt-10 pt-6 border-t border-gray-100">
               <h3 className="text-lg font-semibold mb-3">Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag, index) => (
-                  <span key={index} className="bg-gray-100 px-3 py-1 text-sm rounded-full text-gray-700 hover:bg-gray-200 transition-colors">
+                  <span key={index} className="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs h-min">
                     #{tag}
                   </span>
                 ))}
               </div>
             </div>
           )}
-          
-          {/* Comments */}
-          {post.comments && post.comments.length > 0 && (
-            <div className="mt-10 pt-6 border-t border-gray-100">
-              <div className="flex items-center mb-6">
-                <MessageCircle className="h-5 w-5 text-green-600 mr-2" />
-                <h3 className="text-xl font-semibold">Comments ({post.comments.length})</h3>
-              </div>
-              <div className="space-y-6">
-                {post.comments.map((comment, index) => (
-                  <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex items-center mb-2">
-                      <div className="h-8 w-8 rounded-full overflow-hidden relative mr-3">
-                        <Image 
-                          src={comment.userImage || '/placeholder-user.jpg'} 
-                          alt={comment.username}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-medium">{comment.username}</p>
-                        <p className="text-xs text-gray-500">{comment.date}</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-700">{comment.content}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
-      
+
       {/* Related Articles */}
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         <h2 className="text-2xl font-bold mb-8 text-gray-800">Related Articles</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {relatedPosts.map((relatedPost, index) => (
-            <Link href={`/blog/${encodeURIComponent(relatedPost.slug)}`} key={index}>
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow h-full">
-                <div className="h-48 relative">
-                  <Image 
-                    src={relatedPost.featuredImage || '/placeholder-image.jpg'} 
-                    alt={relatedPost.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    {relatedPost.categories && relatedPost.categories.slice(0, 1).map((category, catIndex) => (
-                      <span key={catIndex} className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                        {category}
-                      </span>
-                    ))}
-                  </div>
-                  <h3 className="font-bold text-lg mb-2 line-clamp-2">{relatedPost.title}</h3>
-                  <div className="flex items-center text-sm text-gray-500 mt-3">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    <span>{relatedPost.publishDate}</span>
-                    <Clock className="h-4 w-4 ml-3 mr-1" />
-                    <span>{relatedPost.readTime}</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+          {relatedPosts.slice(0, 3).map((relatedPost, index) =>
+            <BlogCard post={relatedPost} key={index} />
+          )}
         </div>
       </div>
     </div>

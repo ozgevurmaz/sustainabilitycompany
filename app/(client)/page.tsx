@@ -1,27 +1,57 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Leaf, Droplet, Sun, Building, TrendingUp, Award } from "lucide-react";
 import HeroSection from "@/components/client/Hero";
-import { dummyBlog, dummyServices } from "@/lib/constant";
 import ServicesSection from "@/components/client/servicesSection";
 import Testimonial from "@/components/client/testimonial";
 import InformationCards from "@/components/client/Home/InformationCards";
 import BlogCard from "@/components/client/Blog/BlogCard";
-import { BlogPostType, BlogType } from "@/lib/types/types";
+import { BlogPostType } from "@/lib/types/types";
+import { toast } from "@/hooks/use-toast";
+import { dummyCategories } from "@/lib/constant";
 
 export default function Home() {
-  const [posts, setPosts] = useState<BlogPostType[]>(dummyBlog);
+  const [posts, setPosts] = useState<BlogPostType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const fetchBlogPosts = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/blog/client');
+      if (!response.ok) {
+        throw new Error('Failed to fetch blog posts');
+      }
+      const data = await response.json();
+      const sorted = data.sort((a: BlogPostType, b: BlogPostType) =>
+        new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime()
+      );
+      setPosts(sorted);
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load blog posts.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogPosts();
+  }, []);
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <HeroSection index={0} />
 
-      {/* Mission Section */} 
+      {/* Mission Section */}
       <section className="bg-white py-16">
         <div className="container mx-auto px-12 xxl:px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-10">
@@ -94,7 +124,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <ServicesSection services={dummyServices} />
+      <ServicesSection />
 
       {/* Testimonial */}
       <Testimonial />
@@ -139,7 +169,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.slice(0, 3).map((post) => (
-              <BlogCard post={post} key={post.id}/>
+              <BlogCard post={post} key={post.slug}  />
             ))}
           </div>
 

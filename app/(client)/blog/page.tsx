@@ -4,25 +4,90 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Clock, Calendar, Search, Tag } from "lucide-react";
 import HeroSection from "@/components/client/Hero";
-import { dummyBlog, dummyCategories } from "@/lib/constant";
 import BlogCard from "@/components/client/Blog/BlogCard";
+import { BlogPostType, CategoryType } from "@/lib/types/types";
+import { toast } from "@/hooks/use-toast";
+import LoadingPage from "@/components/LoadingPage";
 
 export default function Blog() {
-    const [posts, setPosts] = useState(dummyBlog);
+    const [posts, setPosts] = useState<BlogPostType[]>([]);
+    const [categories, setCategories] = useState<CategoryType[]>([])
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
-    const [featuredPost, ...regularPosts] = posts;
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const fetchBlogPosts = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('/api/blog/client');
+            if (!response.ok) {
+                throw new Error('Failed to fetch blog posts');
+            }
+            const data = await response.json();
+            const sorted = data.sort((a: BlogPostType, b: BlogPostType) =>
+                new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime()
+            );
+            setPosts(sorted);
+        } catch (error) {
+            console.error('Error fetching blog posts:', error);
+            toast({
+                title: "Error",
+                description: "Failed to load blog posts.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('/api/categories');
+            if (!response.ok) {
+                throw new Error('Failed to fetch categories');
+            }
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchBlogPosts();
+        fetchCategories();
+    }, []);
+
+    if (isLoading) {
+        return <LoadingPage />
+    }
+
+    // Function to find category name by ID
+    const findCategoryName = (categoryId: string) => {
+        const category = categories.find(cat => cat._id === categoryId);
+        return category ? category.name : "Uncategorized";
+    };
 
     // Handle filtering by both search query and category
     const filteredPosts = posts.filter((post) => {
         const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedCategory === "All" || post.categories.includes(selectedCategory);
+        
+        // Check if the selected category ID exists in the post's categories array
+        const matchesCategory = selectedCategory === "All" || 
+            post.categories.some(categoryId => {
+                const category = categories.find(cat => cat._id === categoryId);
+                return category && category.name === selectedCategory;
+            });
+            
         return matchesSearch && matchesCategory;
     });
+
+    // Get featured post safely
+    const featuredPost = filteredPosts.length > 0 ? filteredPosts[0] : null;
 
     return (
         <div>
@@ -46,14 +111,25 @@ export default function Blog() {
 
                         {/* Category Pills */}
                         <div className="flex flex-wrap gap-2 justify-center md:justify-end">
-                            {dummyCategories.map((category) => (
+                            <button
+                                onClick={() => setSelectedCategory("All")}
+                                className={`px-3 py-1 text-sm rounded-full transition-all ${
+                                    selectedCategory === "All"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-white text-gray-700 hover:bg-green-100"
+                                }`}
+                            >
+                                All
+                            </button>
+                            {categories.map((category) => (
                                 <button
-                                    key={category.id}
+                                    key={category._id}
                                     onClick={() => setSelectedCategory(category.name)}
-                                    className={`px-3 py-1 text-sm rounded-full transition-all ${selectedCategory === category.name
+                                    className={`px-3 py-1 text-sm rounded-full transition-all ${
+                                        selectedCategory === category.name
                                         ? "bg-green-600 text-white"
                                         : "bg-white text-gray-700 hover:bg-green-100"
-                                        }`}
+                                    }`}
                                 >
                                     {category.name}
                                 </button>
@@ -64,7 +140,7 @@ export default function Blog() {
             </div>
 
             {/* Featured Post Section */}
-            {!searchQuery && selectedCategory === "All" && (
+            {!searchQuery && selectedCategory === "All" && featuredPost && (
                 <section className="py-12 bg-white">
                     <div className="container mx-auto px-4 max-w-6xl">
                         <h2 className="text-2xl font-bold mb-8 border-l-4 border-green-500 pl-3">Featured Article</h2>
@@ -81,10 +157,15 @@ export default function Blog() {
                                 </div>
                                 <CardContent className="p-8 flex flex-col justify-between">
                                     <div>
-                                        <div className="mb-4">
-                                            <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">
-                                                {featuredPost.categories || "Sustainable Living"}
-                                            </span>
+                                        <div className="mb-4 flex flex-wrap gap-2">
+                                            {featuredPost.categories.map((categoryId) => (
+                                                <span 
+                                                    key={categoryId}
+                                                    className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium"
+                                                >
+                                                    {findCategoryName(categoryId)}
+                                                </span>
+                                            ))}
                                         </div>
                                         <h3 className="text-3xl font-bold text-gray-900 mb-4">{featuredPost.title}</h3>
                                         <p className="text-gray-600 mb-6 line-clamp-3">{featuredPost.excerpt}</p>
@@ -125,7 +206,7 @@ export default function Blog() {
                     {filteredPosts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filteredPosts.map((post) => (
-                                <BlogCard post={post} key={post.id} />
+                                <BlogCard post={post} key={post.slug}/>
                             ))}
                         </div>
                     ) : (

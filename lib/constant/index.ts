@@ -1,10 +1,10 @@
-import {Battery, Building, Car, Droplet, Earth, Flower2, Globe, Leaf, Lightbulb, Recycle, Sprout, Sun, Trash2, Trees, Waves, Wind, Zap } from "lucide-react";
+import { Battery, Building, Car, Droplet, Earth, Flower2, Globe, Leaf, Lightbulb, Recycle, Sprout, Sun, Trash2, Trees, Waves, Wind, Zap } from "lucide-react";
 
 import { BlogPostType, CategoryType, HeroSectionType, ServicesType, TestimonialType } from "../types/types";
 
 export const dummyBlog: BlogPostType[] = [
     {
-        id: 1,
+        _id: "680a7a39c60eaf230428a17b",
         title: "Understanding Carbon Footprint",
         slug: "understanding-carbon-footprint",
         excerpt: "Learn how carbon footprint affects the environment and what you can do to reduce it in your daily life. Small changes can make a big difference.",
@@ -19,11 +19,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-03-28",
         readTime: "5 min read",
         views: 320,
-        likes: 24,
-        comments: 5
     },
     {
-        id: 2,
+        _id: "680a7b3cc60eaf230428a2ea",
         title: "Water Conservation Tips",
         slug: "water-conservation-tips",
         excerpt: "Simple and effective ways to conserve water and reduce wastage in your home, garden and community.",
@@ -38,11 +36,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-03-22",
         readTime: "4 min read",
         views: 289,
-        likes: 18,
-        comments: 3
     },
     {
-        id: 3,
+        _id: "680a7bb5c60eaf230428a42d",
         title: "The Future of Renewable Energy",
         slug: "future-of-renewable-energy",
         excerpt: "Exploring the latest innovations in solar and wind energy and how they are reshaping our energy landscape.",
@@ -57,11 +53,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-03-15",
         readTime: "6 min read",
         views: 452,
-        likes: 37,
-        comments: 10
     },
     {
-        id: 4,
+        _id: "680a7c18c60eaf230428a52d",
         title: "Sustainable Fashion: Beyond the Trends",
         slug: "sustainable-fashion-beyond-trends",
         excerpt: "How sustainable fashion is changing the industry and practical tips for building an eco-friendly wardrobe.",
@@ -76,11 +70,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-03-10",
         readTime: "7 min read",
         views: 399,
-        likes: 29,
-        comments: 7
     },
     {
-        id: 5,
+        _id: "680a7c7bc60eaf230428a637",
         title: "Corporate Sustainability Success: Green Office Initiative",
         slug: "corporate-sustainability-success",
         excerpt: "Case study of how a mid-sized tech company reduced their environmental impact by 40% through simple office policies.",
@@ -95,11 +87,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-03-05",
         readTime: "8 min read",
         views: 274,
-        likes: 19,
-        comments: 4
     },
     {
-        id: 6,
+        _id: "6802afe988fb61fd72fad3de",
         title: "Community Garden Transformation",
         slug: "community-garden-transformation",
         excerpt: "How an urban neighborhood converted vacant lots into thriving community gardens with impressive environmental benefits.",
@@ -114,11 +104,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-02-28",
         readTime: "6 min read",
         views: 360,
-        likes: 22,
-        comments: 6
     },
     {
-        id: 7,
+        _id: "680a7cdfc60eaf230428a6f4",
         title: "Zero-Waste Home Challenge Results",
         slug: "zero-waste-home-challenge-results",
         excerpt: "Real-world results from families who took our 30-day zero-waste challenge, including challenges and measurable outcomes.",
@@ -133,11 +121,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-02-20",
         readTime: "5 min read",
         views: 342,
-        likes: 25,
-        comments: 5
     },
     {
-        id: 8,
+        _id: "680a7d72c60eaf230428a87d",
         title: "Climate Policy Changes: What You Need to Know",
         slug: "climate-policy-changes",
         excerpt: "Summary of recent climate policy developments and how they might affect individuals and businesses.",
@@ -152,11 +138,9 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-02-15",
         readTime: "9 min read",
         views: 421,
-        likes: 31,
-        comments: 9
     },
     {
-        id: 9,
+        _id: "680a4168c60eaf2304289ca4",
         title: "Eco-Friendly Product Reviews: Home Cleaning",
         slug: "eco-friendly-product-reviews-cleaning",
         excerpt: "Honest reviews of popular eco-friendly home cleaning products that actually work and are truly sustainable.",
@@ -171,8 +155,6 @@ export const dummyBlog: BlogPostType[] = [
         publishDate: "2025-02-08",
         readTime: "7 min read",
         views: 388,
-        likes: 28,
-        comments: 8
     }
 ];
 
@@ -281,10 +263,10 @@ export const dummyTestimonials: TestimonialType[] = [
 ]
 
 export const dummyCategories: CategoryType[] = [
-    { id: 1, name: "Renewable Energy", postCount: 14 },
-    { id: 2, name: "Zero Waste", postCount: 9 },
-    { id: 3, name: "Sustainable Living", postCount: 8 },
-    { id: 4, name: "Climate Action", postCount: 12 },
-    { id: 5, name: "Case Studies", postCount: 6 },
-    { id: 6, name: "Tips & Tricks", postCount: 1 },
+    { _id: "1", name: "Renewable Energy", postCount: 14 },
+    { _id: "2", name: "Zero Waste", postCount: 9 },
+    { _id: "3", name: "Sustainable Living", postCount: 8 },
+    { _id: "4", name: "Climate Action", postCount: 12 },
+    { _id: "5", name: "Case Studies", postCount: 6 },
+    { _id: "6", name: "Tips & Tricks", postCount: 1 },
 ]

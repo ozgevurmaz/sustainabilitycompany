@@ -66,7 +66,7 @@ export default function DeleteServiceDialog({
     deleteFunction()
   };
 
-  // If no service is provided, don't render the dialog content
+  // If no service is provided
   if (!service) return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>

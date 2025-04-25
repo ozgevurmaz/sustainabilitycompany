@@ -7,7 +7,8 @@ import {
   Save,
   Trash2,
   Loader2,
-  LucideIcon
+  LucideIcon,
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -203,7 +204,7 @@ export default function ServicesForm({
       description: formData.get("description") as string,
       content: formData.get("content") as string,
       importance: formData.get("importance") as string,
-      benefits: form.benefits, // Use the benefits array from state
+      benefits: form.benefits,
       imageUrl: form.imageUrl || "",
       icon: formData.get("icon") as string || form.icon,
       color: formData.get("color") as string || form.color,
@@ -506,6 +507,7 @@ export default function ServicesForm({
                   disabled={isSubmitting}
                   className="w-full sm:w-auto"
                 >
+                  <X className="h-4 w-4" />
                   Cancel
                 </Button>
 

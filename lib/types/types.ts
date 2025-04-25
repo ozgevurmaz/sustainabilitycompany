@@ -12,6 +12,7 @@ export type FormTypes = {
 }
 
 export type ServicesType = {
+    _id: string;
     title: string;
     slug: string;
     description: string;
@@ -22,17 +23,6 @@ export type ServicesType = {
     icon: string;
     color: string;
     order?: number;
-}
-
-export type BlogType = {
-    _id: string;
-    title: string;
-    excerpt: string;
-    imageUrl: string;
-    slug: string;
-    readTime: string;
-    category: string[];
-    date: string;
 }
 
 export type TestimonialType = {
@@ -57,27 +47,26 @@ export type TestimonialFormType = {
 }
 
 export interface BlogPostType {
-    id: number;
+    _id: string;
     title: string;
     slug: string;
     excerpt: string;
     content: string;
     categories: string[];
-    tags: string[] | string;
+    tags: string[];
     featuredImage: string;
-    status: "published" | "draft";
+    status: "published" | "draft" | "scheduled";
     isPublished: boolean;
     metaTitle: string;
     metaDescription: string;
     publishDate: string;
+    publishTime?: string;
     readTime: string;
     views: number;
-    likes: number;
-    comments: number;
 }
 
 export interface CategoryType {
-    id: number;
+    _id: string;
     name: string;
     postCount: number;
 }

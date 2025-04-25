@@ -67,7 +67,6 @@ export default function ServicesManagement() {
     }
   }, [session, status, router]);
 
-  // Mock fetch services data (replace with actual API call)
   useEffect(() => {
     if (status !== "loading" && session?.user?.role === "admin") {
       fetchServices();

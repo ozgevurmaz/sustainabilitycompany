@@ -1,17 +1,51 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import HeroSection from "@/components/client/Hero";
 import ServicesSection from "@/components/client/servicesSection";
-import { dummyBlog } from "@/lib/constant";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Check, Leaf, Recycle, Droplet, Sun, Wind, TreePine, Trash2 } from "lucide-react";
 import BlogCard from '@/components/client/Blog/BlogCard';
 import Link from 'next/link';
+import { BlogPostType } from '@/lib/types/types';
+import { toast } from '@/hooks/use-toast';
 
 export default function Services() {
+  const [posts, setPosts] = useState<BlogPostType[] | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const CASE_STUDY_ID = "68079fc8d37750ef1b01dc94";
+  useEffect(() => {
+    fetchBlogs();
+  }, [])
 
+  const fetchBlogs = async () => {
+
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/blog`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch blog post data");
+      }
+
+      const data = await res.json();
+
+      const filtered = data.filter((d: BlogPostType) =>
+        d.categories.includes(CASE_STUDY_ID)
+      );
+
+      setPosts(filtered);
+    } catch (err) {
+      console.log("Error fetching blog:", err);
+      toast({
+        title: "Error",
+        description: "Failed to load blog post data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -227,10 +261,9 @@ export default function Services() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {dummyBlog
-              .filter((post) => post.categories.includes("Case Studies"))
+            {posts && posts
               .map((post) => (
-                <BlogCard post={post} key={post.id} />
+                <BlogCard post={post} key={post._id} />
               ))
             }
           </div>
