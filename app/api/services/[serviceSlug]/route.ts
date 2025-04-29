@@ -9,11 +9,11 @@ type Params = {
   };
 };
 // Get a single service by Slug
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(req: NextRequest, context: any) {
   await connectToDB();
-  const { serviceSlug } = params;
+  const { serviceSlug } = context.params;
   try {
-    const service = await Service.findOne({ slug:serviceSlug });
+    const service = await Service.findOne({ slug: serviceSlug });
     if (!service) {
       return new Response(JSON.stringify({ message: "Service not found" }), { status: 404 });
     }
@@ -24,13 +24,13 @@ export async function GET(req: NextRequest, { params }: Params) {
 }
 
 // Update a service by Slug
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(req: NextRequest, context: any) {
   await connectToDB();
-  const { serviceSlug } = params;
+  const { serviceSlug } = context.params;
   try {
     const data = await req.json();
 
-    const updatedService = await Service.findOneAndUpdate({ slug:serviceSlug }, data, {
+    const updatedService = await Service.findOneAndUpdate({ slug: serviceSlug }, data, {
       new: true,
     });
 
@@ -53,9 +53,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
 
 // Delete a service by Slug
-export async function DELETE(req: NextRequest, { params }: Params) {
+export async function DELETE(req: NextRequest, context: any) {
   await connectToDB();
-  const { serviceSlug } = params;
+  const { serviceSlug } = context.params;
   try {
     const deletedService = await Service.findOneAndDelete({ slug: serviceSlug });
 

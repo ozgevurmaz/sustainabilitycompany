@@ -8,9 +8,9 @@ type Params = {
     };
 };
 
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(req: NextRequest, context:any) {
     await connectToDB();
-    const { testimonialId } = params;
+    const { testimonialId } = context.params;
     try {
         const testimonial = await Testimonial.findOne({ _id: testimonialId });
         if (!testimonial) {
@@ -22,9 +22,9 @@ export async function GET(req: NextRequest, { params }: Params) {
     }
 }
 
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(req: NextRequest, context:any) {
     await connectToDB();
-    const { testimonialId } = params;
+    const { testimonialId } = context.params;
     try {
         const data = await req.json();
 
@@ -47,9 +47,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
     }
 }
 
-export async function DELETE(req: NextRequest, { params }: Params) {
+export async function DELETE(req: NextRequest, context:any) {
     await connectToDB();
-    const { testimonialId } = params;
+    const { testimonialId } = context.params;
     try {
         const deletedTestimonial = await Testimonial.findOneAndDelete({ _id: testimonialId });
 
