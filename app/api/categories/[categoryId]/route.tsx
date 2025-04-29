@@ -1,9 +1,9 @@
 import { connectToDB } from "@/lib/MongoDB";
 import Blog from "@/models/blog";
 import Categories from "@/models/categories";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(req: Request, context: { params: { categoryId: string } }) {
+export async function DELETE(req: NextRequest, context: { params: { categoryId: string } }) {
     await connectToDB();
     const { categoryId } = context.params;
 

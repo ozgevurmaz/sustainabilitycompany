@@ -1,11 +1,11 @@
-import { BlogPostType, CategoryType, ServicesType } from "@/lib/types/types";
+import { BlogPostType, CategoryType, ServicesType, TestimonialType } from "@/lib/types/types";
 
 
 let cachedServices: ServicesType[] | null = null;
 let cachedBlogs: BlogPostType[] | null = null;
 let cachedPublishedBlogs: BlogPostType[] | null = null;
 let cachedCategories: CategoryType[] | null = null;
-
+let cachedTestimonials: TestimonialType[] | null = null;
 export function setCachedServices(data: ServicesType[] | null) {
   cachedServices = data;
 }
@@ -37,4 +37,12 @@ export function setCachedCategories(data: CategoryType[] | null) {
 
 export function getCachedCategories() {
   return cachedCategories;
+}
+
+export function setCachedTestimonials(data: TestimonialType[] | null) {
+  cachedTestimonials = data;
+}
+
+export function getCachedTestimonials() {
+  return cachedTestimonials;
 }

@@ -26,7 +26,7 @@ export type ServicesType = {
 }
 
 export type TestimonialType = {
-    id: number;
+    _id?: string;
     name: string;
     company: string;
     position: string;
@@ -34,16 +34,6 @@ export type TestimonialType = {
     rating: number;
     imageUrl: string;
     featured: boolean;
-    date: string;
-}
-
-export type TestimonialFormType = {
-    name: string;
-    company: string;
-    position: string;
-    comment: string;
-    rating: number;
-    imageUrl: string;
 }
 
 export interface BlogPostType {

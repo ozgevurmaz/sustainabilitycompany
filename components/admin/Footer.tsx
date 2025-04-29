@@ -14,7 +14,7 @@ export default function AdminFooter() {
                         <h4 className="text-sm font-semibold text-gray-600 mb-4">Quick Links</h4>
                         <ul className="space-y-2">
                             <li>
-                                <Link href="/admin/dashboard" className="text-sm text-gray-500 hover:text-green-600 flex items-center">
+                                <Link href="/admin" className="text-sm text-gray-500 hover:text-green-600 flex items-center">
                                     <span>Dashboard</span>
                                 </Link>
                             </li>

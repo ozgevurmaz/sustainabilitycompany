@@ -58,6 +58,7 @@ import Image from "next/image";
 import { PublishToggleDialog } from "@/components/admin/Blog/PublishToggleDialog";
 import { DeleteCategoryDialog } from "@/components/admin/Blog/DeleteCategory";
 import { getCachedBlogs, getCachedCategories } from "@/lib/cache";
+import { fetchBlogs, fetchCategories } from "@/lib/actions";
 
 export default function BlogManagement() {
   const { data: session, status } = useSession();
@@ -107,11 +108,8 @@ export default function BlogManagement() {
       if (!response.ok) {
         throw new Error('Failed to fetch blog posts');
       }
-      const data = await response.json();
-      const sorted = data.sort((a: BlogPostType, b: BlogPostType) =>
-        new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime()
-      );
-      setBlogPosts(sorted);
+      const data = await fetchBlogs()
+      setBlogPosts(data);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       toast({

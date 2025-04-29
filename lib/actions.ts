@@ -1,4 +1,4 @@
-import { setCachedServices, getCachedServices, getCachedBlogs, setCachedBlogs, getCachedCategories } from "@/lib/cache";
+import { setCachedServices, getCachedServices, getCachedBlogs, setCachedBlogs, getCachedCategories, getCachedTestimonials } from "@/lib/cache";
 import { BlogPostType, ServicesType } from "./types/types";
 
 export async function fetchServices(filter?: string) {
@@ -90,4 +90,19 @@ export async function fetchCategories() {
   }
   const data = await response.json();
   return data;
+}
+
+
+export async function fetchTestimonials() {
+  const cached = getCachedTestimonials();
+  if (cached) {
+    return cached;
+  }
+
+  const response = await fetch("/api/testimonial");
+  if (!response.ok) {
+    throw new Error("Failed to fetch testimonials")
+  }
+  const data = await response.json();
+  return data
 }
