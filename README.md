@@ -45,7 +45,7 @@ The project is optimized for performance, responsiveness, and scalability using 
 - Add SEO and accessibility enhancements
 - Performance optimizations for faster loading
 
-## 📁 Project Structure (Simplified)
+## 📁 Project Structure
 ├── app/
 │   ├── (client)/                # Client-side pages and layouts
 │   │   ├── about/               # About page
