@@ -29,7 +29,7 @@ function applyFilterAndSortServices(data: ServicesType[], filter?: string) {
     );
   }
 
-  return data.sort((a, b) => a.order - b.order);
+  return data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
 export async function fetchBlogs(filter?: string) {
