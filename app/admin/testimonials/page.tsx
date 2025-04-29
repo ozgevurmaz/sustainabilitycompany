@@ -34,6 +34,19 @@ import { fetchTestimonials } from "@/lib/actions";
 import { getCachedTestimonials, setCachedTestimonials } from "@/lib/cache";
 import { TestimonialForm } from "@/components/admin/Testimonial/TestimonialForm";
 
+
+const DEFAULT_FORM: TestimonialType = {
+  _id: "",
+  name: "",
+  company: "",
+  position: "",
+  comment: "",
+  rating: 5,
+  imageUrl: "",
+  featured: true
+};
+
+
 export default function TestimonialsManagement() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -44,17 +57,7 @@ export default function TestimonialsManagement() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentTestimonial, setCurrentTestimonial] = useState<TestimonialType | null>(null);
-
-  const DEFAULT_FORM: TestimonialType = {
-    name: "",
-    company: "",
-    position: "",
-    comment: "",
-    rating: 5,
-    imageUrl: "",
-    featured: true
-  };
+  const [currentTestimonial, setCurrentTestimonial] = useState<TestimonialType>(DEFAULT_FORM);
 
   useEffect(() => {
     if (status !== "loading" && (!session || session.user?.role !== "admin")) {
@@ -103,7 +106,7 @@ export default function TestimonialsManagement() {
   // Reset edit form
   const resetEditForm = () => {
     setEditingId(null);
-    setCurrentTestimonial(null);
+    setCurrentTestimonial(DEFAULT_FORM);
   };
 
   // Handle delete testimonial
@@ -133,7 +136,7 @@ export default function TestimonialsManagement() {
           throw new Error("Failed to delete testimonial");
         }
         setIsDeleteDialogOpen(false);
-        setCurrentTestimonial(null);
+        setCurrentTestimonial(DEFAULT_FORM);
         setIsLoading(false);
         setCachedTestimonials(null);
         toast({
@@ -334,7 +337,7 @@ export default function TestimonialsManagement() {
         onOpenChange={setIsDeleteDialogOpen}
         onClose={() => {
           setIsDeleteDialogOpen(false);
-          setCurrentTestimonial(null);
+          setCurrentTestimonial(DEFAULT_FORM);
         }}
         onConfirm={handleDeleteSubmit}
         testimonial={currentTestimonial}

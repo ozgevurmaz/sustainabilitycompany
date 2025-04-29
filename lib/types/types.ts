@@ -26,7 +26,7 @@ export type ServicesType = {
 }
 
 export type TestimonialType = {
-    _id?: string;
+    _id: string;
     name: string;
     company: string;
     position: string;
