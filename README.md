@@ -95,13 +95,11 @@ The project is optimized for performance, responsiveness, and scalability using 
 ![Admin Screenshot](public/images/screens/admin.png)
 
 ### ✍️ Blog Editor
-![Editor Screenshot](public/images/blog.png)
-![Editor Screenshot](public/images/blogedit.png)
+![Editor Screenshot](public/images/screens/blog.png)
+![Editor Screenshot](public/images/screens/blogedit.png)
 
 ## 🤝 Contact
 
 If you're interested in collaboration, hiring, or just want to connect:  
 📩 Email: ozgevurmaz@gmail.com
 🔗 LinkedIn: linkedin.com/in/elifozgevurmaz
-
-Made with ❤️ by Elif Özge Vurmaz
