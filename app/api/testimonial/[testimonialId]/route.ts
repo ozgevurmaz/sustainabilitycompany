@@ -2,10 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Testimonial from "@/models/testimonial";
 import Activity from "@/models/activity";
+type Params = {
+    params: {
+        testimonialId: string;
+    };
+};
 
-export async function GET(req: NextRequest, context: { params: { testimonialId: string } }) {
+export async function GET(req: NextRequest, { params }: Params) {
     await connectToDB();
-    const { testimonialId } = context.params;
+    const { testimonialId } = params;
     try {
         const testimonial = await Testimonial.findOne({ _id: testimonialId });
         if (!testimonial) {
@@ -17,9 +22,9 @@ export async function GET(req: NextRequest, context: { params: { testimonialId: 
     }
 }
 
-export async function PUT(req: NextRequest, context: { params: { testimonialId: string } }) {
+export async function PUT(req: NextRequest, { params }: Params) {
     await connectToDB();
-    const { testimonialId } = context.params;
+    const { testimonialId } = params;
     try {
         const data = await req.json();
 
@@ -42,9 +47,9 @@ export async function PUT(req: NextRequest, context: { params: { testimonialId: 
     }
 }
 
-export async function DELETE(req: NextRequest, context: { params: { testimonialId: string } }) {
+export async function DELETE(req: NextRequest, { params }: Params) {
     await connectToDB();
-    const { testimonialId } = context.params;
+    const { testimonialId } = params;
     try {
         const deletedTestimonial = await Testimonial.findOneAndDelete({ _id: testimonialId });
 

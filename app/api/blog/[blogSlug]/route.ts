@@ -4,10 +4,16 @@ import Blog from "@/models/blog";
 import Categories from "@/models/categories";
 import Activity from "@/models/activity";
 
+type Params = {
+  params: {
+    blogSlug: string;
+  };
+};
+
 // Get a single blog post by Slug
-export async function GET(req: NextRequest, context: { params: { blogSlug: string } }) {
+export async function GET(req: NextRequest, { params }: Params) {
   await connectToDB();
-  const { blogSlug } = context.params
+  const { blogSlug } = params;
   try {
     const blog = await Blog.findOne({ slug: blogSlug });
 
@@ -22,9 +28,9 @@ export async function GET(req: NextRequest, context: { params: { blogSlug: strin
 }
 
 // Update a blog post by Slug
-export async function PUT(req: NextRequest, context: { params: { blogSlug: string } }) {
+export async function PUT(req: NextRequest, { params }: Params) {
   await connectToDB();
-  const { blogSlug } = context.params
+  const { blogSlug } = params;
   try {
     const data = await req.json();
 
@@ -73,10 +79,9 @@ export async function PUT(req: NextRequest, context: { params: { blogSlug: strin
 
 
 // Delete a blog post by Slug
-export async function DELETE(req: NextRequest, context: { params: { blogSlug: string } }) {
+export async function DELETE(req: NextRequest, { params }: Params) {
   await connectToDB();
-
-  const { blogSlug } = context.params;
+  const { blogSlug } = params;
 
   try {
     const deletedBlog = await Blog.findOne({ slug: blogSlug });

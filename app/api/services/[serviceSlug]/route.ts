@@ -3,12 +3,17 @@ import { connectToDB } from "@/lib/MongoDB";
 import Service from "@/models/services";
 import Activity from "@/models/activity";
 
+type Params = {
+  params: {
+    serviceSlug: string;
+  };
+};
 // Get a single service by Slug
-export async function GET(req: NextRequest, { params }: { params: { serviceSlug: string } }) {
+export async function GET(req: NextRequest, { params }: Params) {
   await connectToDB();
-  const slug = params.serviceSlug;
+  const { serviceSlug } = params;
   try {
-    const service = await Service.findOne({ slug });
+    const service = await Service.findOne({ slug:serviceSlug });
     if (!service) {
       return new Response(JSON.stringify({ message: "Service not found" }), { status: 404 });
     }
@@ -19,13 +24,13 @@ export async function GET(req: NextRequest, { params }: { params: { serviceSlug:
 }
 
 // Update a service by Slug
-export async function PUT(req: NextRequest, { params }: { params: { serviceSlug: string } }) {
+export async function PUT(req: NextRequest, { params }: Params) {
   await connectToDB();
-  const slug = params.serviceSlug;
+  const { serviceSlug } = params;
   try {
     const data = await req.json();
 
-    const updatedService = await Service.findOneAndUpdate({ slug }, data, {
+    const updatedService = await Service.findOneAndUpdate({ slug:serviceSlug }, data, {
       new: true,
     });
 
@@ -48,11 +53,11 @@ export async function PUT(req: NextRequest, { params }: { params: { serviceSlug:
 
 
 // Delete a service by Slug
-export async function DELETE(req: NextRequest, context: { params: { serviceSlug: string } }) {
+export async function DELETE(req: NextRequest, { params }: Params) {
   await connectToDB();
-  const {serviceSlug} = context.params;
+  const { serviceSlug } = params;
   try {
-    const deletedService = await Service.findOneAndDelete({ serviceSlug });
+    const deletedService = await Service.findOneAndDelete({ slug: serviceSlug });
 
     if (!deletedService) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
