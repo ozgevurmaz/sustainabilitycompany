@@ -7,7 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ICON_OPTIONS } from "@/lib/constant";
 import { ServicesType } from "@/lib/types/types";
 import ContactForm from "@/components/client/contactForm";
-import { ArrowLeft, Check, ExternalLink } from "lucide-react";
+import { ArrowLeft, Check, ExternalLink, FileWarningIcon } from "lucide-react";
 import Image from "next/image";
 import { toast } from "@/hooks/use-toast";
 import LoadingPage from "@/components/LoadingPage";
@@ -23,49 +23,49 @@ export default function ServicePage() {
 
     useEffect(() => {
         if (slug) {
-          const fetchServiceData = async () => {
-            try {
-              setLoading(true);
-    
-              const cachedServices = getCachedServices();
-              if (cachedServices) {
-                const found = cachedServices.find((s) => s.slug === slug);
-                if (found) {
-                  console.log("Loaded from cache ✅");
-                  setService(found);
-                  return; 
-                }
-              }
+            const fetchServiceData = async () => {
+                try {
+                    setLoading(true);
 
-              const response = await fetch(`/api/services/${slug}`);
-              if (!response.ok) {
-                throw new Error('Failed to fetch service data');
-              }
-              const serviceData = await response.json();
-              setService(serviceData);
-    
-              if (cachedServices) {
-                setCachedServices([...cachedServices, serviceData]);
-              } else {
-                setCachedServices([serviceData]);
-              }
-    
-            } catch (err) {
-              console.error('Error fetching service:', err);
-              toast({
-                title: "Error",
-                description: "Failed to load service data",
-                variant: "destructive"
-              });
-            } finally {
-              setLoading(false);
-            }
-          };
-    
-          fetchServiceData();
+                    const cachedServices = getCachedServices();
+                    if (cachedServices) {
+                        const found = cachedServices.find((s) => s.slug === slug);
+                        if (found) {
+                            console.log("Loaded from cache ✅");
+                            setService(found);
+                            return;
+                        }
+                    }
+
+                    const response = await fetch(`/api/services/${slug}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch service data');
+                    }
+                    const serviceData = await response.json();
+                    setService(serviceData);
+
+                    if (cachedServices) {
+                        setCachedServices([...cachedServices, serviceData]);
+                    } else {
+                        setCachedServices([serviceData]);
+                    }
+
+                } catch (err) {
+                    console.error('Error fetching service:', err);
+                    toast({
+                        title: "Error",
+                        description: "Failed to load service data",
+                        variant: "destructive"
+                    });
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchServiceData();
         }
-      }, [slug]);
-      
+    }, [slug]);
+
     if (loading) {
         return (
             <LoadingPage />
@@ -93,10 +93,10 @@ export default function ServicePage() {
         );
     }
     const getIconByName = (name: string) => {
-        return ICON_OPTIONS.find((icon) => icon.name === name)?.component || ICON_OPTIONS[0];
+        return ICON_OPTIONS.find((icon) => icon.name === name)?.component;
     };
 
-    const ServiceIcon = getIconByName(service.icon);
+    const ServiceIcon = getIconByName(service.icon) as React.ElementType;
 
     return (
         <div className="min-h-screen pb-16 m-0 w-full ">
@@ -128,7 +128,9 @@ export default function ServicePage() {
                                 className="flex justify-center mb-2 md:mb-4"
                             >
                                 <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg p-4" style={{ backgroundColor: service.color }}>
+
                                     <ServiceIcon className="w-10 h-10 text-gray-600" />
+
                                 </div>
                             </motion.div>
                             <motion.h1
@@ -154,7 +156,7 @@ export default function ServicePage() {
                                 className="mt-8"
                             >
                                 <Button
-                                    onClick={() => document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })}
+                                    onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
                                     className="hover:opacity-90 text-gray-600 px-8 py-6 text-lg rounded-full transition-all"
                                     style={{ backgroundColor: service.color }}
                                 >
