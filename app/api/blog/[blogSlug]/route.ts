@@ -4,16 +4,10 @@ import Blog from "@/models/blog";
 import Categories from "@/models/categories";
 import Activity from "@/models/activity";
 
-type Params = {
-  params: {
-    blogSlug: string;
-  };
-};
-
-// Get a single blog post by Slug
-export async function GET(req: NextRequest, context: { params: { blogSlug: string } }) {
+export async function GET(req: NextRequest, context: any) {
   await connectToDB();
   const { blogSlug } = context.params;
+
   try {
     const blog = await Blog.findOne({ slug: blogSlug });
 
@@ -27,10 +21,10 @@ export async function GET(req: NextRequest, context: { params: { blogSlug: strin
   }
 }
 
-// Update a blog post by Slug
-export async function PUT(req: NextRequest, context: { params: { blogSlug: string } }) {
+export async function PUT(req: NextRequest, context: any) {
   await connectToDB();
   const { blogSlug } = context.params;
+
   try {
     const data = await req.json();
 
@@ -39,27 +33,19 @@ export async function PUT(req: NextRequest, context: { params: { blogSlug: strin
       return NextResponse.json({ error: "Original blog not found" }, { status: 404 });
     }
 
-    const updatedBlog = await Blog.findOneAndUpdate(
-      { slug: blogSlug },
-      data,
-      { new: true }
-    );
-
-    if (!updatedBlog) {
-      return NextResponse.json({ error: "Blog post not found after update" }, { status: 404 });
-    }
+    const updatedBlog = await Blog.findOneAndUpdate({ slug: blogSlug }, data, { new: true });
 
     const oldCategories = existingBlog.categories.map((id: string) => id.toString());
     const newCategories = updatedBlog.categories.map((id: string) => id.toString());
 
-    const removedCategories = oldCategories.filter((id: string) => !newCategories.includes(id));
-    const addedCategories = newCategories.filter((id: string) => !oldCategories.includes(id));
+    const removed = oldCategories.filter((id: string) => !newCategories.includes(id));
+    const added = newCategories.filter((id: string) => !oldCategories.includes(id));
 
-    for (const id of removedCategories) {
+    for (const id of removed) {
       await Categories.findByIdAndUpdate(id, { $inc: { postCount: -1 } });
     }
 
-    for (const id of addedCategories) {
+    for (const id of added) {
       await Categories.findByIdAndUpdate(id, { $inc: { postCount: 1 } });
     }
 
@@ -72,14 +58,11 @@ export async function PUT(req: NextRequest, context: { params: { blogSlug: strin
 
     return NextResponse.json(updatedBlog, { status: 200 });
   } catch (error) {
-    console.error("Error updating blog:", error);
     return NextResponse.json({ error: "Error updating blog" }, { status: 500 });
   }
 }
 
-
-// Delete a blog post by Slug
-export async function DELETE(req: NextRequest, context: { params: { blogSlug: string } }) {
+export async function DELETE(req: NextRequest, context: any) {
   await connectToDB();
   const { blogSlug } = context.params;
 
@@ -90,25 +73,21 @@ export async function DELETE(req: NextRequest, context: { params: { blogSlug: st
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
-    const title = deletedBlog.title;
-
-    for (const categoryId of deletedBlog.categories) {
-      const cat = await Categories.findById(categoryId);
-      if (cat && cat.postCount && cat.postCount <= 0) {
-        await Categories.findByIdAndUpdate(categoryId, { $set: { postCount: 0 } });
-      }
-    }
-
     await Blog.deleteOne({ _id: deletedBlog._id });
+
     await Activity.create({
       type: "blog",
       action: "deleted",
-      message: `A blog post deleted: "${title}"`,
+      message: `A blog post deleted: "${deletedBlog.title}"`,
       timestamp: new Date(),
     });
 
+    for (const id of deletedBlog.categories) {
+      await Categories.findByIdAndUpdate(id, { $inc: { postCount: -1 } });
+    }
+
     return NextResponse.json({ message: "Blog deleted successfully" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Error deleting Blog" }, { status: 500 });
+    return NextResponse.json({ error: "Error deleting blog" }, { status: 500 });
   }
 }
