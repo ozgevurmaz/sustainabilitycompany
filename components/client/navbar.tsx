@@ -23,11 +23,15 @@ const navItems = [
   { label: 'Contact', href: '/contact' },
 ];
 
+interface ServiceItemTypes {
+  label: string,
+  href: string
+}
 const Navbar = ({ isBg }: { isBg?: boolean }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [serviceItems, setServiceItems] = useState([]);
+  const [serviceItems, setServiceItems] = useState<ServiceItemTypes[]>([]);
   const [servicesLoaded, setServicesLoaded] = useState(false);
 
   useEffect(() => {
