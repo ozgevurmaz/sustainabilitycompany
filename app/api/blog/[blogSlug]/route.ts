@@ -5,11 +5,11 @@ import Categories from "@/models/categories";
 import Activity from "@/models/activity";
 
 // Get a single blog post by Slug
-export async function GET(req: Request, { params }: { params: { blogSlug: string } }) {
+export async function GET(req: Request, context: { params: { blogSlug: string } }) {
   await connectToDB();
-
+const {blogSlug} = context.params
   try {
-    const blog = await Blog.findOne({ slug: params.blogSlug });
+    const blog = await Blog.findOne({ slug: blogSlug });
 
     if (!blog) {
       return NextResponse.json({ error: "Blog Post not found" }, { status: 404 });
@@ -22,19 +22,19 @@ export async function GET(req: Request, { params }: { params: { blogSlug: string
 }
 
 // Update a blog post by Slug
-export async function PUT(req: Request, { params }: { params: { blogSlug: string } }) {
+export async function PUT(req: Request, context: { params: { blogSlug: string } }) {
   await connectToDB();
-
+  const {blogSlug} = context.params
   try {
     const data = await req.json();
 
-    const existingBlog = await Blog.findOne({ slug: params.blogSlug });
+    const existingBlog = await Blog.findOne({ slug: blogSlug });
     if (!existingBlog) {
       return NextResponse.json({ error: "Original blog not found" }, { status: 404 });
     }
 
     const updatedBlog = await Blog.findOneAndUpdate(
-      { slug: params.blogSlug },
+      { slug: blogSlug },
       data,
       { new: true }
     );

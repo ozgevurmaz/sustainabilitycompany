@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, { params }: { params: { serviceSlug:
 }
 
 // Update a service by Slug
-export async function PUT(req: Request, { params }: { params: { serviceSlug: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { serviceSlug: string } }) {
   await connectToDB();
   const slug = params.serviceSlug;
   try {
@@ -48,11 +48,11 @@ export async function PUT(req: Request, { params }: { params: { serviceSlug: str
 
 
 // Delete a service by Slug
-export async function DELETE(req: Request, { params }: { params: { serviceSlug: string } }) {
+export async function DELETE(req: NextRequest, context: { params: { serviceSlug: string } }) {
   await connectToDB();
-  const slug = params.serviceSlug;
+  const {serviceSlug} = context.params;
   try {
-    const deletedService = await Service.findOneAndDelete({ slug });
+    const deletedService = await Service.findOneAndDelete({ serviceSlug });
 
     if (!deletedService) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });

@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Service from "@/models/services";
 import Activity from "@/models/activity";
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
   try {
     await connectToDB();
     const { updates } = await req.json();

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Service from "@/models/services";
 import Activity from "@/models/activity";
@@ -16,7 +16,7 @@ export async function GET() {
 }
 
 // Post a service by ID
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
 
   try {
     await connectToDB();

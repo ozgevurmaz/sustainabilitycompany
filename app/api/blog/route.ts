@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Blog from "@/models/blog";
 import Categories from "@/models/categories";
 import Activity from "@/models/activity";
 
 // Create a new blog post
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   await connectToDB();
 
   try {
