@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Clock, Calendar, Search, Tag } from "lucide-react";
+import { ArrowRight, Clock, Calendar, Search } from "lucide-react";
 import HeroSection from "@/components/client/Hero";
 import BlogCard from "@/components/client/Blog/BlogCard";
 import { BlogPostType, CategoryType } from "@/lib/types/types";

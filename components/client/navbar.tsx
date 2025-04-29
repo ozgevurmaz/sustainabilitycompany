@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from 'lucide-react';
-import { ServicesType } from '@/lib/types/types';
 import { fetchServices } from '@/lib/actions';
 
 const navItems = [

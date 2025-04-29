@@ -28,23 +28,15 @@ import {
 import {
   FileText,
   Settings,
-  LogOut,
   Loader2,
-  Image,
-  Home,
   MessageSquare,
-  BarChart3,
   Search,
-  ArrowUpRight,
   CalendarIcon,
-  BookOpen,
-  Clock,
-  Users,
   ExternalLink,
 } from "lucide-react";
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import CustomCard from "../../components/admin/CustomCard";
-import { getCachedActivities, setCachedActivities } from "@/lib/cache";
+import { setCachedActivities } from "@/lib/cache";
 import { ActivityType } from "@/lib/types/types";
 import { fetchActivities } from "@/lib/actions";
 import ActivityCard from "@/components/admin/ActivityCard";

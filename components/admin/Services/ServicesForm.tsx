@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  Leaf,
   Plus,
   Save,
   Trash2,
   Loader2,
-  LucideIcon,
   X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

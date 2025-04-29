@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -58,7 +58,7 @@ import Image from "next/image";
 import { PublishToggleDialog } from "@/components/admin/Blog/PublishToggleDialog";
 import { DeleteCategoryDialog } from "@/components/admin/Blog/DeleteCategory";
 import { getCachedBlogs, getCachedCategories } from "@/lib/cache";
-import { fetchBlogs, fetchCategories } from "@/lib/actions";
+import { fetchBlogs } from "@/lib/actions";
 
 export default function BlogManagement() {
   const { data: session, status } = useSession();
