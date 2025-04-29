@@ -8,7 +8,7 @@ type Params = {
     };
 };
 
-export async function GET(req: NextRequest, context:any) {
+export async function GET(req: NextRequest, context: any) {
     await connectToDB();
     const { testimonialId } = context.params;
     try {
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest, context:any) {
     }
 }
 
-export async function PUT(req: NextRequest, context:any) {
+export async function PUT(req: NextRequest, context: any) {
     await connectToDB();
     const { testimonialId } = context.params;
     try {
@@ -47,7 +47,7 @@ export async function PUT(req: NextRequest, context:any) {
     }
 }
 
-export async function DELETE(req: NextRequest, context:any) {
+export async function DELETE(req: NextRequest, context: any) {
     await connectToDB();
     const { testimonialId } = context.params;
     try {

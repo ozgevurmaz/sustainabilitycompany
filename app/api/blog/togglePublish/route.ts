@@ -3,7 +3,7 @@ import Activity from "@/models/activity";
 import Blog from "@/models/blog";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest, context: { params: { blogSlug: string } }) {
+export async function PUT(req: NextRequest, context: any) {
   await connectToDB();
   const { blogSlug } = context.params;
   try {
