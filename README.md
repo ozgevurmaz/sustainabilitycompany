@@ -1,7 +1,11 @@
 # Sustainable Company Website 🌱
 
-A fully responsive web application developed for a sustainable company.  
-The project includes a client-side website and an admin dashboard, currently in development.
+This is a fully responsive web application built for a sustainability-focused company, featuring both a modern client-facing website and a powerful admin dashboard.
+The client site showcases services, blog content, and a contact form to engage visitors, while the admin panel allows authenticated users to manage content such as blog posts, services, testimonials, and more — all through a clean and intuitive interface.
+The project is optimized for performance, responsiveness, and scalability using modern web technologies like Next.js, TypeScript, and Tailwind CSS.
+
+ [✨ Live Demo](https://sustainabilitycompany.vercel.app/) | [🔍 Features](#-features) | [🚀 Tech Stack](#-tech-stack) | [📁 Project Structure](#-project-structure) | [📸 Screenshots](#-screenshots)
+
 
 ## 🚀 Tech Stack
 
@@ -25,6 +29,7 @@ The project includes a client-side website and an admin dashboard, currently in 
 - [MongoDB](https://www.mongodb.com/)
 - [Cloudinary](https://cloudinary.com/)
 - [Recharts](https://recharts.org/)
+- [TipTap Editor](https://tiptap.dev/)
 
 ## ✨ Features
 
@@ -32,21 +37,16 @@ The project includes a client-side website and an admin dashboard, currently in 
 - Smooth animations and transitions
 - Static and dynamic pages: Contact, About, Services, Blog
 - Authentication with NextAuth
-- Admin panel (under construction) to manage content
-- Dynamic integration of blog and services (coming soon)
+- Admin panel to manage content
+- Dynamic integration of blog and services
 
 ## 🔧 Upcoming Improvements
 
-- Connect MongoDB data to client-side content
-- Finish admin panel features (create/update/delete content)
 - Add SEO and accessibility enhancements
-
-## 📹 Preview
-
-A short walkthrough video is available [here]().
+- Performance optimizations for faster loading
 
 ## 📁 Project Structure (Simplified)
-├── app/  
+├── app/
 │   ├── (client)/                # Client-side pages and layouts
 │   │   ├── about/               # About page
 │   │   ├── blog/                # Blog list
@@ -69,6 +69,8 @@ A short walkthrough video is available [here]().
 │   ├── blog/                    # Blog API
 │   ├── services/                # Services API
 │   └── testimonial/             # Testimonials API
+│   └── categories/              # Categories API
+│   └── activities/              # Activities API
 │
 ├── components/                  # Reusable UI components
 │   ├── ui/                      # Shadcn/UI components
@@ -84,6 +86,17 @@ A short walkthrough video is available [here]().
 │
 ├── public/                      # Static assets (images, icons, etc.)
 
+## Screenshots 
+
+### 🌍 Home Page
+![Home Screenshot](public/images/screens/home.png)
+
+### 🔐 Admin Dashboard
+![Admin Screenshot](public/images/screens/admin.png)
+
+### ✍️ Blog Editor
+![Editor Screenshot](public/images/blog.png)
+![Editor Screenshot](public/images/blogedit.png)
 
 ## 🤝 Contact
 
@@ -91,3 +104,4 @@ If you're interested in collaboration, hiring, or just want to connect:
 📩 Email: ozgevurmaz@gmail.com
 🔗 LinkedIn: linkedin.com/in/elifozgevurmaz
 
+Made with ❤️ by Elif Özge Vurmaz
