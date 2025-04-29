@@ -11,9 +11,9 @@ type Params = {
 };
 
 // Get a single blog post by Slug
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(req: NextRequest, context: { params: { blogSlug: string } }) {
   await connectToDB();
-  const { blogSlug } = params;
+  const { blogSlug } = context.params;
   try {
     const blog = await Blog.findOne({ slug: blogSlug });
 
@@ -28,9 +28,9 @@ export async function GET(req: NextRequest, { params }: Params) {
 }
 
 // Update a blog post by Slug
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(req: NextRequest, context: { params: { blogSlug: string } }) {
   await connectToDB();
-  const { blogSlug } = params;
+  const { blogSlug } = context.params;
   try {
     const data = await req.json();
 
@@ -79,9 +79,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
 
 // Delete a blog post by Slug
-export async function DELETE(req: NextRequest, { params }: Params) {
+export async function DELETE(req: NextRequest, context: { params: { blogSlug: string } }) {
   await connectToDB();
-  const { blogSlug } = params;
+  const { blogSlug } = context.params;
 
   try {
     const deletedBlog = await Blog.findOne({ slug: blogSlug });
