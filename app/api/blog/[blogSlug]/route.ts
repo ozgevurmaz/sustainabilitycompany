@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Blog from "@/models/blog";
 import Categories from "@/models/categories";
 import Activity from "@/models/activity";
 
 // Get a single blog post by Slug
-export async function GET(req: Request, context: { params: { blogSlug: string } }) {
+export async function GET(req: NextRequest, context: { params: { blogSlug: string } }) {
   await connectToDB();
-const {blogSlug} = context.params
+  const { blogSlug } = context.params
   try {
     const blog = await Blog.findOne({ slug: blogSlug });
 
@@ -22,9 +22,9 @@ const {blogSlug} = context.params
 }
 
 // Update a blog post by Slug
-export async function PUT(req: Request, context: { params: { blogSlug: string } }) {
+export async function PUT(req: NextRequest, context: { params: { blogSlug: string } }) {
   await connectToDB();
-  const {blogSlug} = context.params
+  const { blogSlug } = context.params
   try {
     const data = await req.json();
 
@@ -73,7 +73,7 @@ export async function PUT(req: Request, context: { params: { blogSlug: string } 
 
 
 // Delete a blog post by Slug
-export async function DELETE(req: Request, context: { params: { blogSlug: string } }) {
+export async function DELETE(req: NextRequest, context: { params: { blogSlug: string } }) {
   await connectToDB();
 
   const { blogSlug } = context.params;
@@ -97,7 +97,7 @@ export async function DELETE(req: Request, context: { params: { blogSlug: string
     await Blog.deleteOne({ _id: deletedBlog._id });
     await Activity.create({
       type: "blog",
-      action:"deleted",
+      action: "deleted",
       message: `A blog post deleted: "${title}"`,
       timestamp: new Date(),
     });
