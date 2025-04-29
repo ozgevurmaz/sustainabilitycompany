@@ -18,7 +18,7 @@ import { setCachedCategories } from "@/lib/cache";
 interface AddCategoriesDialogProps {
     open: boolean;
     onClose: () => void;
-    onAddCategory: (updatedList: CategoryType[]) => void
+    onAddCategory: (updatedList: CategoryType) => void
 }
 
 export function AddCategoryDialog({ open, onClose, onAddCategory }: AddCategoriesDialogProps) {
@@ -55,7 +55,7 @@ export function AddCategoryDialog({ open, onClose, onAddCategory }: AddCategorie
             setCachedCategories(null)
             setCategoryName("");
             onClose();
-        } catch (error) {
+        } catch (error:any) {
             setError(error.message || "Failed to add category");
         } finally {
             setIsSubmitting(false);

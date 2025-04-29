@@ -11,7 +11,7 @@ const ServiceCard = ({ service, onClick, variants }:{service:ServicesType,onClic
         return ICON_OPTIONS.find((icon) => icon.name === name)?.component || ICON_OPTIONS[0];
     };
 
-    const ServiceIcon = getIconByName(service.icon);
+    const ServiceIcon = getIconByName(service.icon) as React.ElementType;
 
     return (
       <motion.div variants={variants}>
