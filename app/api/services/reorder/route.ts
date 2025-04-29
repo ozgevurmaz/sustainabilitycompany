@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Service from "@/models/services";
+import Activity from "@/models/activity";
 
 export async function PUT(req: Request) {
   try {
@@ -22,6 +23,21 @@ export async function PUT(req: Request) {
         { new: true }
       );
     }
+
+    await Activity.create({
+      type: "service",
+      action: "edited",
+      message: `A service published: "${updates[0].title}"`,
+      timestamp: new Date(),
+    });
+    
+    await Activity.create({
+      type: "service",
+      action: "edited",
+      message: `A service published: "${updates[1].title}"`,
+      timestamp: new Date(),
+    });
+    
     return NextResponse.json({ message: "Order updated" }, { status: 200 });
   } catch (error) {
     return NextResponse.json({

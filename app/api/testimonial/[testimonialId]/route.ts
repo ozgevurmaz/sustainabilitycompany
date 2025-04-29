@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Testimonial from "@/models/testimonial";
+import Activity from "@/models/activity";
 
 export async function GET(req: NextRequest, context: { params: { testimonialId: string } }) {
     await connectToDB();
@@ -29,7 +30,12 @@ export async function PUT(req: NextRequest, context: { params: { testimonialId: 
         if (!updatedTestimonial) {
             return NextResponse.json({ error: "Testimonial not found" }, { status: 404 });
         }
-
+        await Activity.create({
+            type: "testimonial",
+            action: "edited",
+            message: `A testimonial published.`,
+            timestamp: new Date(),
+        });
         return NextResponse.json(updatedTestimonial, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Error updating testimonial" }, { status: 500 });
@@ -45,6 +51,12 @@ export async function DELETE(req: NextRequest, context: { params: { testimonialI
         if (!deletedTestimonial) {
             return NextResponse.json({ error: "Testimonial not found" }, { status: 404 });
         }
+        await Activity.create({
+            type: "testimonial",
+            action: "deleted",
+            message: `A testimonial published.`,
+            timestamp: new Date(),
+        });
 
         return NextResponse.json({ message: "Testimonial deleted successfully" }, { status: 200 });
     } catch (error) {

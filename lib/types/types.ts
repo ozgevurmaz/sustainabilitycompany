@@ -51,6 +51,7 @@ export interface BlogPostType {
     metaDescription: string;
     publishDate: string;
     publishTime?: string;
+    updatedAt?: string;
     readTime: string;
     views: number;
 }
@@ -60,3 +61,12 @@ export interface CategoryType {
     name: string;
     postCount: number;
 }
+
+export interface ActivityType {
+    _id: string;
+    type: "blog" | "service" | "testimonial" | "category";
+    action: "edited" | "created" | "deleted";
+    message: string;
+    createdAt: Date;
+    timestamp: Date;
+};

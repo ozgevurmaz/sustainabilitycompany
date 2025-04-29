@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Blog from "@/models/blog";
 import Categories from "@/models/categories";
+import Activity from "@/models/activity";
 
 // Create a new blog post
 export async function POST(req: Request) {
@@ -25,6 +26,13 @@ export async function POST(req: Request) {
     }
 
     const newBlog = await Blog.create({ title, slug, excerpt, content, categories, tags, featuredImage, status, metaTitle, metaDescription, isPublished, publishDate, publishTime, readTime, views });
+    await Activity.create({
+      type: "blog",
+      action: "created",
+      message: `Blog post created: "${title}", status:"${status}`,
+      timestamp: new Date(),
+    });
+
     return NextResponse.json(newBlog, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Error creating blog" }, { status: 500 });

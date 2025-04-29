@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Blog from "@/models/blog";
 import Categories from "@/models/categories";
+import Activity from "@/models/activity";
 
 // Get a single blog post by Slug
 export async function GET(req: Request, { params }: { params: { blogSlug: string } }) {
@@ -56,6 +57,13 @@ export async function PUT(req: Request, { params }: { params: { blogSlug: string
       await Categories.findByIdAndUpdate(id, { $inc: { postCount: 1 } });
     }
 
+    await Activity.create({
+      type: "blog",
+      action: "edited",
+      message: `Blog post edited: "${updatedBlog.title}", status: ${updatedBlog.status}`,
+      timestamp: new Date(),
+    });
+
     return NextResponse.json(updatedBlog, { status: 200 });
   } catch (error) {
     console.error("Error updating blog:", error);
@@ -77,17 +85,22 @@ export async function DELETE(req: Request, context: { params: { blogSlug: string
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
+    const title = deletedBlog.title;
+
     for (const categoryId of deletedBlog.categories) {
       const cat = await Categories.findById(categoryId);
-      if (cat) {
-        await Categories.findByIdAndUpdate(categoryId, { $inc: { postCount: -1 } });
-      }
-      if (cat && cat.postCount < 0) {
+      if (cat && cat.postCount && cat.postCount <= 0) {
         await Categories.findByIdAndUpdate(categoryId, { $set: { postCount: 0 } });
       }
     }
 
     await Blog.deleteOne({ _id: deletedBlog._id });
+    await Activity.create({
+      type: "blog",
+      action:"deleted",
+      message: `A blog post deleted: "${title}"`,
+      timestamp: new Date(),
+    });
 
     return NextResponse.json({ message: "Blog deleted successfully" }, { status: 200 });
   } catch (error) {

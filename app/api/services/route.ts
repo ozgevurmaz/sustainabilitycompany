@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Service from "@/models/services";
+import Activity from "@/models/activity";
 
 // Get all services
 export async function GET() {
@@ -41,6 +42,13 @@ export async function POST(req: Request) {
       color,
       slug,
       order: nextOrder
+    });
+
+    await Activity.create({
+      type: "service",
+      action: "created",
+      message: `A service published: "${title}"`,
+      timestamp: new Date(),
     });
 
     return NextResponse.json(newService, { status: 201 });

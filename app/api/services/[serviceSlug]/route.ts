@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDB } from "@/lib/MongoDB";
 import Service from "@/models/services";
+import Activity from "@/models/activity";
 
 // Get a single service by Slug
 export async function GET(req: NextRequest, { params }: { params: { serviceSlug: string } }) {
@@ -32,6 +33,13 @@ export async function PUT(req: Request, { params }: { params: { serviceSlug: str
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
     }
 
+    await Activity.create({
+      type: "service",
+      action: "edited",
+      message: `A service published: "${updatedService.title}"`,
+      timestamp: new Date(),
+    });
+
     return NextResponse.json(updatedService, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Error updating service" }, { status: 500 });
@@ -49,7 +57,12 @@ export async function DELETE(req: Request, { params }: { params: { serviceSlug: 
     if (!deletedService) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
     }
-
+    await Activity.create({
+      type: "service",
+      action: "deleted",
+      message: `A service published: "${deletedService.title}"`,
+      timestamp: new Date(),
+    });
     return NextResponse.json({ message: "Service deleted successfully" }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Error deleting service" }, { status: 500 });

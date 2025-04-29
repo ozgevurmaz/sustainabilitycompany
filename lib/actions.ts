@@ -1,4 +1,4 @@
-import { setCachedServices, getCachedServices, getCachedBlogs, setCachedBlogs, getCachedCategories, getCachedTestimonials } from "@/lib/cache";
+import { setCachedServices, getCachedServices, getCachedBlogs, setCachedBlogs, getCachedCategories, getCachedTestimonials, getCachedActivities, setCachedActivities, setCachedTestimonials } from "@/lib/cache";
 import { BlogPostType, ServicesType } from "./types/types";
 
 export async function fetchServices(filter?: string) {
@@ -73,7 +73,7 @@ export async function fetchPublishedBlogs(filter?: string) {
   }
   let data = await response.json();
   const sorted = data.sort((a: BlogPostType, b: BlogPostType) =>
-    new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime()
+    new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime()
   );
   setCachedBlogs(sorted);
   return applyFilterAndSortBlogs(sorted, filter);
@@ -104,5 +104,20 @@ export async function fetchTestimonials() {
     throw new Error("Failed to fetch testimonials")
   }
   const data = await response.json();
+  setCachedTestimonials(data)
   return data
+}
+
+export async function fetchActivities() {
+  const cached = getCachedActivities();
+  if (cached) return cached;
+
+  const response = await fetch("/api/activities");
+  if (!response.ok) {
+    throw new Error("Failed to fetch activities");
+  }
+
+  const data = await response.json();
+  setCachedActivities(data);
+  return data;
 }

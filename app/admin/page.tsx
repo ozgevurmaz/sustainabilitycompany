@@ -44,11 +44,16 @@ import {
 } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import CustomCard from "../../components/admin/CustomCard";
+import { getCachedActivities, setCachedActivities } from "@/lib/cache";
+import { ActivityType } from "@/lib/types/types";
+import { fetchActivities } from "@/lib/actions";
+import ActivityCard from "@/components/admin/ActivityCard";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [dateRange, setDateRange] = useState("30d");
+  const [activities, setActivities] = useState<ActivityType[]>([])
 
   useEffect(() => {
     if (status !== "loading" && (!session || session.user?.role !== "admin")) {
@@ -63,6 +68,21 @@ export default function AdminDashboard() {
       </div>
     );
   }
+
+  const loadActivities = async () => {
+    const response = await fetchActivities();
+    setActivities(response);
+  };
+
+  useEffect(() => {
+    loadActivities();
+  }, []);
+
+  const refreshActivities = async () => {
+    const data = await fetchActivities();
+    setCachedActivities(data);
+    setActivities(data);
+  };
 
   const quickStats = [
     { title: "Total Blog Posts", value: "24", change: "+3 this month" },
@@ -195,38 +215,13 @@ export default function AdminDashboard() {
           <TabsContent value="recent">
             {/* Recent Activity Panel */}
             <Card className="mb-8">
-              <CardHeader>
+              <CardHeader className="relative">
                 <CardTitle>Recent Activity</CardTitle>
+                <Button onClick={() => refreshActivities()} className="absolute top-3 right-3" variant={"outline"}>Refresh</Button>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-start">
-                    <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
-                      <FileText className="h-4 w-4 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">New blog post published</p>
-                      <p className="text-xs text-gray-500">2 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                      <Settings className="h-4 w-4 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">Service "Energy Audit" updated</p>
-                      <p className="text-xs text-gray-500">Yesterday</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                      <MessageSquare className="h-4 w-4 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">New testimonial added</p>
-                      <p className="text-xs text-gray-500">2 days ago</p>
-                    </div>
-                  </div>
+                  {activities.slice(0,4).map((a) => <ActivityCard key={a._id} activity={a} />)}
                 </div>
               </CardContent>
             </Card>
@@ -378,7 +373,6 @@ export default function AdminDashboard() {
                       <tr className="border-b">
                         <th className="text-left py-3 px-2">Post Title</th>
                         <th className="text-right py-3 px-2">Visits</th>
-                        <th className="text-right py-3 px-2">Comments</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -390,7 +384,6 @@ export default function AdminDashboard() {
                             </div>
                           </td>
                           <td className="py-3 px-2 text-right">{post.visits}</td>
-                          <td className="py-3 px-2 text-right">{post.comments}</td>
                         </tr>
                       ))}
                     </tbody>
