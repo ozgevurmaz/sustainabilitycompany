@@ -31,7 +31,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ index }) => {
 
   return (
     <div
-      className={`relative ${index === 0 ? "h-[70vh]" : "h-[40vh]"} w-full overflow-hidden`}
+      className={`relative ${index === 0 ? "h-[70vh]" : "h-[50vh]"} w-full overflow-hidden`}
     >
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-black/60 z-10" />
@@ -49,14 +49,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ index }) => {
 
       {/* Content */}
       <div className="relative z-30 h-full w-full flex items-center justify-center">
-        <div className="container mx-auto px-4 pt-16 md:pt-20">
+        <div className="container mx-auto px-4 pt-20 md:pt-24">
           <div className="max-w-4xl mx-auto text-center">
             <motion.h1
               initial="hidden"
               animate="visible"
               custom={0}
               variants={fadeInUp}
-              className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-green-200 to-white bg-clip-text text-transparent mb-6 md:mb-8 leading-tight"
+              className={`${index === 0 ? "text-4xl md:text-5xl" : "text-2xl md:text-4xl"} xl:text-5xl font-bold bg-gradient-to-r from-green-200 to-white bg-clip-text text-transparent mb-6 md:mb-8 leading-tight`}
             >
               {section.title}
             </motion.h1>
@@ -66,7 +66,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ index }) => {
               animate="visible"
               custom={1}
               variants={fadeInUp}
-              className="text-lg md:text-2xl text-gray-100 mb-8 max-w-2xl mx-auto"
+              className="text-md md:text-xl text-gray-100 mb-8 max-w-3xl mx-auto"
             >
               {section.subtitle}
             </motion.p>

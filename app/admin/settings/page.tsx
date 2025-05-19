@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label"; // Use Label instead of FormLabel
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -100,8 +100,8 @@ export default function AdminSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto px-4 py-8">
+    <div className=" min-h-screen bg-gray-50">
+      <main className="container mx-auto px-4 md:px-16 py-8">
         <div className="flex items-start justify-start">
           <Link href="/admin" className="mr-2 sm:mr-4">
             <Button variant="ghost" className="px-2 sm:px-4 h-9">

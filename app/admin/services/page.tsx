@@ -254,7 +254,7 @@ export default function ServicesManagement() {
       {/* Header */}
       <SecondHeader pageTitle="Services" dialogOpen={handleAddClick} />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 md:px-16">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <CustomCard

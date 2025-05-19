@@ -99,7 +99,7 @@ export default function ServicePage() {
     const ServiceIcon = getIconByName(service.icon) as React.ElementType;
 
     return (
-        <div className="min-h-screen pb-16 m-0 w-full ">
+        <div className="min-h-screen pb-16 m-0 w-full px-4 md:px-16 ">
 
             <div className="absolute inset-0 z-0 h-[60vh]">
                 <div className="absolute inset-0 bg-black/60 z-10" />
@@ -125,9 +125,9 @@ export default function ServicePage() {
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="flex justify-center mb-2 md:mb-4"
+                                className="flex justify-center mb-4 md:mb-4"
                             >
-                                <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg p-4" style={{ backgroundColor: service.color }}>
+                                <div className="w-10 h-10 md:w-16 md:h-16 lg:w-10 lg:h-10 xl:w-16 xl:h-16 rounded-full flex items-center justify-center shadow-lg p-2 xl:p-4" style={{ backgroundColor: service.color }}>
 
                                     <ServiceIcon className="w-10 h-10 text-gray-600" />
 
@@ -137,7 +137,7 @@ export default function ServicePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className="text-4xl md:text-6xl font-bold text-white mb-4 md:mb-6 tracking-tight"
+                                className="text-2xl md:text-5xl lg:text-4xl xl:text-5xl font-bold text-white mb-2 xl:mb-4 md:mb-6 tracking-tight"
                             >
                                 {service.title}
                             </motion.h1>
@@ -145,7 +145,7 @@ export default function ServicePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4 }}
-                                className="text-lg md:text-xl text-white max-w-2xl mx-auto leading-relaxed"
+                                className="text-md md:text-xl text-white max-w-2xl mx-auto leading-relaxed mb-4"
                             >
                                 {service.description}
                             </motion.p>
@@ -153,11 +153,10 @@ export default function ServicePage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
-                                className="mt-8"
                             >
                                 <Button
                                     onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-                                    className="hover:opacity-90 text-gray-600 px-8 py-6 text-lg rounded-full transition-all"
+                                    className="hover:opacity-90 text-gray-600 px-4 py-2 md:px-8 md:py-6 text-md md:text-lg rounded-full transition-all"
                                     style={{ backgroundColor: service.color }}
                                 >
                                     Get Started Now
@@ -171,7 +170,7 @@ export default function ServicePage() {
             </motion.div>
 
             {/* Content Sections */}
-            <div className="container mx-auto px-4 pt-12 relative">
+            <div className="container mx-auto pt-12 relative">
                 {/* Intro text */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -179,10 +178,10 @@ export default function ServicePage() {
                     transition={{ delay: 0.2 }}
                     className="max-w-3xl mx-auto text-center mb-16"
                 >
-                    <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                    <h2 className="text-2xl md:text-3xl xl:text-4xl font-bold text-gray-900 mb-6">
                         Transform Your Business with Our {service.title}
                     </h2>
-                    <p className="text-lg text-gray-700 leading-relaxed">
+                    <p className="text-md md:text-lg xl:text-xl text-gray-700 leading-relaxed">
                         Our dedicated team of experts works closely with you to deliver customized solutions that align
                         perfectly with your sustainability goals.
                     </p>
@@ -200,18 +199,18 @@ export default function ServicePage() {
                             <div className="w-12 h-12 rounded-xl flex items-center justify-center mr-4" style={{ backgroundColor: service.color }}>
                                 <ExternalLink className="w-6 h-6 text-gray-600" />
                             </div>
-                            <h2 className="text-2xl font-bold text-gray-900">
+                            <h2 className="text-xl md:text-2xl font-bold text-gray-900">
                                 Why This Is Important
                             </h2>
                         </div>
-                        <p className="text-gray-700 leading-relaxed text-lg">
+                        <p className="text-gray-700 leading-relaxed text-md md:text-lg">
                             {service.importance}
                         </p>
                     </div>
 
                     {/* Benefits Section */}
                     <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:shadow-2xl transition-all">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
                             Key Benefits
                         </h2>
                         <div className="space-y-4">
@@ -223,10 +222,10 @@ export default function ServicePage() {
                                     transition={{ delay: 0.1 * (index + 1) }}
                                     className="flex items-start space-x-3 group"
                                 >
-                                    <div className="rounded-full p-1.5 group-hover:scale-110 transition-all" style={{ backgroundColor: service.color }}>
-                                        <Check className="w-4 h-4 text-gary-600" />
+                                    <div className="rounded-full p-1 md:p-1.5 group-hover:scale-110 transition-all" style={{ backgroundColor: service.color }}>
+                                        <Check className="w-3 h-3 md:w-4 md:h-4 text-gray-600" />
                                     </div>
-                                    <p className="text-gray-700 text-lg">{benefit}</p>
+                                    <p className="text-gray-700 text-md md:text-lg">{benefit}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -240,10 +239,10 @@ export default function ServicePage() {
                     transition={{ delay: 0.4 }}
                     className="mb-16 bg-white rounded-2xl shadow-xl p-8 border border-gray-100"
                 >
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                    <h2 className="teaxt-xl md:text-2xl font-bold text-gray-900 mb-6 text-center">
                         What This Service Includes
                     </h2>
-                    <p className="text-gray-700 leading-relaxed text-lg max-w-4xl mx-auto">
+                    <p className="text-gray-700 leading-relaxed text-md md:text-lg max-w-4xl mx-auto">
                         {service.content}
                     </p>
                 </motion.div>
@@ -254,10 +253,10 @@ export default function ServicePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100"
+                    className="bg-white rounded-2xl shadow-xl py-8 px-1 border border-gray-100"
                 >
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">Ready to Get Started?</h2>
-                    <p className="text-gray-600 mb-8 text-center max-w-2xl mx-auto">
+                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 text-center">Ready to Get Started?</h2>
+                    <p className="text-gray-600 mb-8 text-center max-w-2xl mx-auto text-md md:text-lg">
                         Fill out the form below and our team will get back to you within 24 hours to discuss how our {service.title} can benefit your organization.
                     </p>
                     <ContactForm />
@@ -267,7 +266,7 @@ export default function ServicePage() {
 
                 <Button
                     onClick={() => router.push("/services")}
-                    className=" absolute z-40 left-4 top-4 md:left-8 md:top-8 bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 inline-flex items-center space-x-2 shadow-lg rounded-full px-4 py-2 transition-all"
+                    className="absolute z-40 left-0 top-1 lg:left-4 xl:scale-[130%] xl:top-2 bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 inline-flex items-center space-x-2 shadow-lg rounded-full px-4 py-2 transition-all"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     <span>Back</span>

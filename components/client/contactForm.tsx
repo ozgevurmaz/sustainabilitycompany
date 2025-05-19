@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormTypes } from '@/lib/types/types';
 import { usePathname } from 'next/navigation';
 import { Card, CardContent } from '../ui/card';
-import { Briefcase, Building, Clock, Leaf, Recycle, Send, Sun, Users } from 'lucide-react';
+import { Briefcase, Building, Clock, HandHelping, Landmark, Leaf, Recycle, Send, Sun, University, Users } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const ContactForm = () => {
@@ -28,7 +28,7 @@ const ContactForm = () => {
     const isContactPage = pathname === "/contact";
     return (
         < section className="py-16 bg-gray-50" >
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-2">
                 <div className="max-w-6xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                         {/* Form Column */}
@@ -36,8 +36,8 @@ const ContactForm = () => {
                             <Card className="border-none shadow-md overflow-hidden">
                                 <CardContent className="p-0">
                                     <div className="bg-green-600 p-6 text-white">
-                                        <h2 className="text-2xl font-bold mb-2">Send Us a Message</h2>
-                                        <p className="opacity-90">Fill out the form below and we'll get back to you soon</p>
+                                        <h2 className="text-xl md:text-2xl font-bold mb-2">Send Us a Message</h2>
+                                        <p className="opacity-90 text-md md:text-lg">Fill out the form below and we'll get back to you soon</p>
                                     </div>
 
                                     <div className="p-6">
@@ -155,15 +155,15 @@ const ContactForm = () => {
                                         Hours of Operation
                                     </h3>
                                     <div className="space-y-2">
-                                        <div className="flex justify-between">
+                                        <div className="flex md:gap-2 flex-col md:flex-row">
                                             <span className="text-gray-600">Monday - Friday:</span>
                                             <span className="font-medium">9:00 AM - 5:00 PM</span>
                                         </div>
-                                        <div className="flex justify-between">
+                                        <div className="flex md:gap-2 flex-col md:flex-row">
                                             <span className="text-gray-600">Saturday:</span>
                                             <span className="font-medium">By appointment</span>
                                         </div>
-                                        <div className="flex justify-between">
+                                        <div className="flex gap-2">
                                             <span className="text-gray-600">Sunday:</span>
                                             <span className="font-medium">Closed</span>
                                         </div>
@@ -211,15 +211,15 @@ const ContactForm = () => {
                                             <span>Large Corporations</span>
                                         </li>
                                         <li className="flex items-center">
-                                            <Building className="h-4 w-4 mr-2 text-green-600" />
+                                            <University className="h-4 w-4 mr-2 text-green-600" />
                                             <span>Educational Institutions</span>
                                         </li>
                                         <li className="flex items-center">
-                                            <Building className="h-4 w-4 mr-2 text-green-600" />
+                                            <Landmark className="h-4 w-4 mr-2 text-green-600" />
                                             <span>Government Organizations</span>
                                         </li>
                                         <li className="flex items-center">
-                                            <Building className="h-4 w-4 mr-2 text-green-600" />
+                                            <HandHelping className="h-4 w-4 mr-2 text-green-600" />
                                             <span>Non-Profit Organizations</span>
                                         </li>
                                     </ul>

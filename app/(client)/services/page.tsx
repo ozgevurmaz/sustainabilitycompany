@@ -60,7 +60,7 @@ export default function Services() {
       <HeroSection index={3} />
 
       {/* Sustainability Stats */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-white px-4 md:px-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {[
@@ -82,14 +82,14 @@ export default function Services() {
       </section>
 
       {/* Services Filter Tabs */}
-      <section className="py-16 bg-green-50">
+      <section className="p-16 px-4 md:px-16 bg-green-50">
         <div className="container mx-auto px-4">
-          <Tabs defaultValue="all" className="w-full max-w-4xl mx-auto">
-            <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-white p-1 rounded-lg mb-8">
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2 bg-white p-1 rounded-lg mb-8 overflow-x-auto md:overflow-hidden">
               <TabsTrigger
                 key="all"
                 value="all"
-                className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-md py-1 flex items-center justify-center"
+                className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-md py-2 flex items-center justify-center"
               >
                 <Leaf className="h-4 w-4 mr-2" />
                 All Solutions
@@ -176,7 +176,7 @@ export default function Services() {
       </section>
 
       {/* Sustainable Approach Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white px-4 md:px-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -232,7 +232,7 @@ export default function Services() {
       </section>
 
       {/* Certification Section */}
-      <section className="py-16 bg-green-50">
+      <section className="p-16 px-4 md:px-16 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -256,7 +256,7 @@ export default function Services() {
       </section>
 
       {/* Case Studies Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 px-4 md:px-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -288,7 +288,7 @@ export default function Services() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-green-50">
+      <section className="py-20 px-4 md:px-16 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="mx-auto">
             <div className="text-center mb-16">
@@ -341,7 +341,7 @@ export default function Services() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-green-700 text-white">
+      <section className="py-20 px-4 md:px-16 bg-green-700 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="md:w-2/3">

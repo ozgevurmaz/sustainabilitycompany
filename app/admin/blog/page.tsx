@@ -252,7 +252,7 @@ export default function BlogManagement() {
       {/* Header */}
       <SecondHeader pageTitle="Blog Posts" dialogOpen={handleCreateClick} />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 md:px-16">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           <CustomCard title="Total Posts" middleValue={String(blogPosts.length)} desc="All blog posts" />

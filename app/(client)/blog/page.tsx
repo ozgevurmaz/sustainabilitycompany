@@ -142,7 +142,7 @@ export default function Blog() {
 
             {/* Featured Post Section */}
             {!searchQuery && selectedCategory === "All" && featuredPost && (
-                <section className="py-12 bg-white">
+                <section className="py-12 px-4 md:px-16 bg-white">
                     <div className="container mx-auto px-4 max-w-6xl">
                         <h2 className="text-2xl font-bold mb-8 border-l-4 border-green-500 pl-3">Featured Article</h2>
                         <Card className="border-none overflow-hidden shadow-xl">
@@ -193,7 +193,7 @@ export default function Blog() {
             )}
 
             {/* Blog Posts Grid Section */}
-            <section className="py-12 bg-green-50">
+            <section className="py-12 px-4 md:px-16 bg-green-50">
                 <div className="container mx-auto px-4 max-w-6xl">
                     <div className="flex justify-between items-center mb-8">
                         <h2 className="text-2xl font-bold border-l-4 border-green-500 pl-3">

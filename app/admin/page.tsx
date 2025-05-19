@@ -40,6 +40,7 @@ import { setCachedActivities } from "@/lib/cache";
 import { ActivityType } from "@/lib/types/types";
 import { fetchActivities } from "@/lib/actions";
 import ActivityCard from "@/components/admin/ActivityCard";
+import { Input } from "@/components/ui/input";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -149,16 +150,16 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 md:px-16">
         {/* Welcome message and search */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
+        <div className="mb-8 flex flex-col items-start md:items-center md:justify-between md:flex-row">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">Welcome back, {session?.user?.name || 'Admin'}</h2>
-            <p className="text-gray-600">Here's what's happening with your sustainability website</p>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800">Welcome back, {session?.user?.name || 'Admin'}</h2>
+            <p className="text-gray-600 text-md md:text-lg">Here's what's happening with your sustainability website</p>
           </div>
-          <div className="mt-4 md:mt-0 flex items-center space-x-2">
+          <div className="mt-4 md:mt-0 flex gap-2">
             <div className="relative">
-              <input
+              <Input
                 type="text"
                 placeholder="Search..."
                 className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
@@ -171,7 +172,7 @@ export default function AdminDashboard() {
                 value={dateRange}
                 onValueChange={setDateRange}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[130px] md:w-[180px]">
                   <SelectValue placeholder="Select time range" />
                 </SelectTrigger>
                 <SelectContent>
@@ -195,7 +196,7 @@ export default function AdminDashboard() {
 
         {/* Tabs for Dashboard Content */}
         <Tabs defaultValue="recent" className="mb-8">
-          <TabsList className="grid grid-cols-5 mb-8">
+          <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8 overflow-x-auto md:overflow-hidden">
             <TabsTrigger value="recent">Recent Activities</TabsTrigger>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>

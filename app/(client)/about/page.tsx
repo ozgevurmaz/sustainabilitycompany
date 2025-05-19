@@ -14,7 +14,7 @@ export default function About() {
             <HeroSection index={1} />
 
             {/* Mission Statement Section */}
-            <section className="py-16 bg-white">
+            <section className="py-16 px-4 md:px-16 bg-white">
                 <div className="container mx-auto px-4">
                     <div className="max-w-3xl mx-auto text-center">
                         <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
@@ -34,7 +34,7 @@ export default function About() {
             </section>
 
             {/* Our Story Section */}
-            <section className="py-20 bg-green-50 relative">
+            <section className="py-20 px-4 md:px-16 bg-green-50 relative">
                 <div className="container mx-auto px-4 relative z-10">
                     <div className="flex flex-col md:flex-row items-center gap-12">
                         <div className="md:w-1/2">
@@ -63,7 +63,7 @@ export default function About() {
             </section>
 
             {/* Our Impact Section */}
-            <section className="py-20 bg-white">
+            <section className="py-20 px-4 md:px-16 bg-white">
                 <div className="container mx-auto px-4">
                     <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">Our Impact</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -84,7 +84,7 @@ export default function About() {
             </section>
 
             {/* Our Values Section */}
-            <section className="py-20 bg-green-50">
+            <section className="py-20 px-4 md:px-16 bg-green-50">
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Core Values</h2>
                     <p className="text-lg text-gray-700 mb-12 max-w-3xl mx-auto">
@@ -123,7 +123,7 @@ export default function About() {
             </section>
 
             {/* Our Approach Section */}
-            <section className="py-20 bg-white">
+            <section className="py-20 px-4 md:px-16 bg-white">
                 <div className="container mx-auto px-4">
                     <div className="max-w-3xl mx-auto">
                         <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">Our Approach</h2>
@@ -170,7 +170,7 @@ export default function About() {
             </section>
 
             {/* Call to Action Section */}
-            <section className="py-20 bg-green-50 text-center">
+            <section className="py-20 px-4 md:px-16 bg-green-50 text-center">
                 <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto">
                         <div className="mb-10 p-6 bg-white rounded-lg shadow-md">

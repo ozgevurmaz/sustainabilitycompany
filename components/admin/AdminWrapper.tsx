@@ -16,9 +16,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <SessionProvider>
       <ProtectedAdmin>
-        <Navbar/>
-        {children}</ProtectedAdmin>
-        <AdminFooter/>
+        <Navbar />
+        {children}
+        <AdminFooter />
+      </ProtectedAdmin>
     </SessionProvider>
   );
 }

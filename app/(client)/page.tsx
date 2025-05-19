@@ -60,7 +60,7 @@ export default function Home() {
       <HeroSection index={0} />
 
       {/* Mission Section */}
-      <section className="bg-white py-16">
+      <section className="bg-white py-16 px-4 md:px-16">
         <div className="container mx-auto px-12 xxl:px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-10">
             <div className="md:w-1/2">
@@ -90,7 +90,7 @@ export default function Home() {
               </div>
             </div>
             <div className="md:w-1/2 relative">
-              <div className="relative h-80 w-full overflow-hidden rounded-lg shadow-xl">
+              <div className="relative h-80 w-full rounded-lg shadow-xl">
                 <Image
                   src="/images/ourmission.jpg"
                   fill
@@ -114,7 +114,7 @@ export default function Home() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-16 bg-green-50">
+      <section className="py-16 bg-green-50 px-4 md:px-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Future Footprints</h2>
@@ -138,7 +138,7 @@ export default function Home() {
       <Testimonial />
 
       {/* CTA Section */}
-      <section className="py-16 bg-green-600 text-white">
+      <section className="py-16 px-4 md:px-16 bg-green-600 text-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="md:w-2/3 mb-8 md:mb-0">
@@ -160,7 +160,7 @@ export default function Home() {
       </section>
 
       {/* Blog Section */}
-      <section className="py-20 bg-green-100">
+      <section className="py-20 bg-green-100 px-4 md:px-16">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-12">
             <div>
