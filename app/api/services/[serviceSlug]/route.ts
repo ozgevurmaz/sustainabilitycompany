@@ -24,10 +24,9 @@ export async function GET(req: NextRequest, context: any) {
 }
 
 // Update a service by Slug
-export async function PUT(req: NextRequest, context: { params: { serviceSlug: string } }) {
+export async function PUT(req: NextRequest, context: any) {
   await connectToDB();
-  const { serviceSlug } = await context.params
-
+  const { serviceSlug } = context.params;
   try {
     const data = await req.json();
 
@@ -54,24 +53,21 @@ export async function PUT(req: NextRequest, context: { params: { serviceSlug: st
 
 
 // Delete a service by Slug
-export async function DELETE(req: NextRequest, context: { params: { serviceSlug: string } }) {
+export async function DELETE(req: NextRequest, context: any) {
   await connectToDB();
-  const { serviceSlug } = await context.params;
-
+  const { serviceSlug } = context.params;
   try {
     const deletedService = await Service.findOneAndDelete({ slug: serviceSlug });
 
     if (!deletedService) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
     }
-
     await Activity.create({
       type: "service",
       action: "deleted",
       message: `A service published: "${deletedService.title}"`,
       timestamp: new Date(),
     });
-
     return NextResponse.json({ message: "Service deleted successfully" }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Error deleting service" }, { status: 500 });
