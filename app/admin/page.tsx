@@ -63,8 +63,8 @@ export default function AdminDashboard() {
   }
 
   const loadActivities = async () => {
-    const response = await fetchActivities();
-    setActivities(response);
+    const data = await fetchActivities();
+    setActivities(data);
   };
 
   useEffect(() => {
@@ -72,6 +72,7 @@ export default function AdminDashboard() {
   }, []);
 
   const refreshActivities = async () => {
+    setCachedActivities(null);
     const data = await fetchActivities();
     setCachedActivities(data);
     setActivities(data);

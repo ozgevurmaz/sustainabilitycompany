@@ -31,7 +31,7 @@ import DeleteTestimonialDialog from "@/components/admin/Testimonial/DeleteTestim
 import TestimonialCard, { renderRatingStars } from "@/components/admin/Testimonial/TestimonialCard";
 import SecondHeader from "@/components/admin/SecondHeader";
 import { fetchTestimonials } from "@/lib/actions";
-import { getCachedTestimonials, setCachedTestimonials } from "@/lib/cache";
+import { getCachedTestimonials, setCachedActivities, setCachedTestimonials } from "@/lib/cache";
 import { TestimonialForm } from "@/components/admin/Testimonial/TestimonialForm";
 
 
@@ -143,6 +143,7 @@ export default function TestimonialsManagement() {
           title: "Testimonial Deleted",
           description: "The testimonial has been successfully deleted."
         });
+        setCachedActivities(null);
       } catch (error) {
         toast({
           title: "Error",
@@ -182,6 +183,7 @@ export default function TestimonialsManagement() {
         title: "Featured Status Updated",
         description: "The testimonial featured status has been updated."
       });
+      setCachedActivities(null);
     } catch (error) {
       toast({
         title: "Error",

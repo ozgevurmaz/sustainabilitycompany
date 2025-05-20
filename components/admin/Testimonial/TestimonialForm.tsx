@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { testimonialSchema } from "@/lib/Schema/testimonial";
-import { setCachedTestimonials } from "@/lib/cache";
+import { setCachedActivities, setCachedTestimonials } from "@/lib/cache";
 
 export const TestimonialForm = ({
     formData,
@@ -103,7 +103,7 @@ export const TestimonialForm = ({
                 title: `Testimonial ${isForEdit ? "Updated" : "Added"}`,
                 description: `The testimonial was successfully ${isForEdit ? "updated" : "added"}.`
             });
-
+            setCachedActivities(null);
             onCancel();
         } catch (error: any) {
             console.error("Error while submitting testimonial:", error);
@@ -112,7 +112,7 @@ export const TestimonialForm = ({
                 description: error.message || "An unexpected error occurred",
                 variant: "destructive",
             });
-            return; 
+            return;
         }
 
     };

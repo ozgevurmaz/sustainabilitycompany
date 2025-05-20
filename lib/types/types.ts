@@ -64,9 +64,16 @@ export interface CategoryType {
 
 export interface ActivityType {
     _id: string;
-    type: "blog" | "service" | "testimonial" | "category";
+    type: "blog" | "service" | "testimonial" | "category" | "settings";
     action: "edited" | "created" | "deleted";
     message: string;
     createdAt: Date;
     timestamp: Date;
 };
+
+export interface AdminLinksType {
+    facebookUrl: string;
+    twitterUrl: string;
+    instagramUrl: string;
+    linkedinUrl: string;
+}

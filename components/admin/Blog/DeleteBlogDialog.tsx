@@ -16,7 +16,7 @@ import {
 import { BlogPostType } from "@/lib/types/types";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
-import { setCachedBlogs } from "@/lib/cache";
+import { setCachedActivities, setCachedBlogs } from "@/lib/cache";
 
 
 interface DeleteDialogProps {
@@ -57,7 +57,7 @@ export function DeleteBlogDialog({
           description: `"${post?.title}" has been deleted.`,
         });
         setIsDeleting(false)
-
+        setCachedActivities(null);
       } catch (error) {
         toast({
           title: "Error",

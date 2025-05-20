@@ -1,4 +1,4 @@
-import { ActivityType, BlogPostType, CategoryType, ServicesType, TestimonialType } from "@/lib/types/types";
+import { ActivityType, AdminLinksType, BlogPostType, CategoryType, ServicesType, TestimonialType } from "@/lib/types/types";
 
 
 let cachedServices: ServicesType[] | null = null;
@@ -7,6 +7,7 @@ let cachedPublishedBlogs: BlogPostType[] | null = null;
 let cachedCategories: CategoryType[] | null = null;
 let cachedTestimonials: TestimonialType[] | null = null;
 let cachedActivities: ActivityType[] | null = null;
+let cachedAdminLinks : AdminLinksType | null = null;
 
 export function setCachedServices(data: ServicesType[] | null) {
   cachedServices = data;
@@ -55,4 +56,12 @@ export function setCachedActivities(data: ActivityType[] | null) {
 
 export function getCachedActivities() {
   return cachedActivities;
+}
+
+export function setCachedAdminLinks(data: AdminLinksType | null){
+  cachedAdminLinks = data;
+}
+
+export function getCachedAdminLinks(){
+  return cachedAdminLinks
 }

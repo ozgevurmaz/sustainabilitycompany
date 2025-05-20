@@ -15,7 +15,7 @@ import { AlertCircle, Leaf, Trash2 } from "lucide-react";
 import { ServicesType } from "@/lib/types/types";
 import { ICON_OPTIONS } from "@/lib/constant";
 import { toast } from "@/hooks/use-toast";
-import { setCachedServices } from "@/lib/cache";
+import { setCachedActivities, setCachedServices } from "@/lib/cache";
 
 interface DeleteServiceDialogProps {
   isOpen: boolean;
@@ -54,7 +54,7 @@ export default function DeleteServiceDialog({
           description: `"${service?.title}" has been deleted.`,
         });
         setCachedServices(null);
-        
+        setCachedActivities(null);
       } catch (error) {
         console.error("Error deleting service:", error);
         toast({

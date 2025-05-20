@@ -1,5 +1,8 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
+import { connectToDB } from "./MongoDB";
+import { Admin } from "@/models/admin";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,12 +13,28 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const admin = { email: "admin@example.com", password: "securepass", role: "admin" };
+        await connectToDB();
 
-        if (credentials?.email === admin.email && credentials?.password === admin.password) {
-          return { id: "1", name: "Admin", email: admin.email, role: admin.role };
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
-        return null;
+
+        const admin = await Admin.findOne({ email: credentials.email.toLowerCase().trim() });
+        if (!admin) {
+          console.log("Admin not found");
+          return null;
+        }
+
+        const isMatch = await bcrypt.compare(credentials.password, admin.password);
+
+        if (!isMatch) {
+          console.log("Wrong password");
+          return null;
+        }
+
+        if (!isMatch) return null;
+
+        return { id: admin._id, name: "Admin", email: admin.email, role: "admin" };
       },
     }),
   ],

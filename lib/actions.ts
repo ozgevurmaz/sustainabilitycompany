@@ -1,4 +1,4 @@
-import { setCachedServices, getCachedServices, getCachedBlogs, setCachedBlogs, getCachedCategories, getCachedTestimonials, getCachedActivities, setCachedActivities, setCachedTestimonials } from "@/lib/cache";
+import { setCachedServices, getCachedServices, getCachedBlogs, setCachedBlogs, getCachedCategories, getCachedTestimonials, getCachedActivities, setCachedActivities, setCachedTestimonials, getCachedAdminLinks, setCachedAdminLinks } from "@/lib/cache";
 import { BlogPostType, ServicesType } from "./types/types";
 
 export async function fetchServices(filter?: string) {
@@ -119,5 +119,19 @@ export async function fetchActivities() {
 
   const data = await response.json();
   setCachedActivities(data);
+  return data;
+}
+
+export async function fetchAdminLinks() {
+  const cached = getCachedAdminLinks();
+  if (cached) return cached;
+
+  const response = await fetch("/api/admin/links");
+  if (!response.ok) {
+    throw new Error("Failed to fetch links");
+  }
+  
+  const data = await response.json();
+  setCachedAdminLinks(data);
   return data;
 }

@@ -1,9 +1,10 @@
 import { connectToDB } from "@/lib/MongoDB";
+import Activity from "@/models/activity";
 import Blog from "@/models/blog";
 import Categories from "@/models/categories";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(req: NextRequest,  context: any) {
+export async function DELETE(req: NextRequest, context: any) {
     await connectToDB();
     const { categoryId } = context.params;
 
@@ -20,6 +21,13 @@ export async function DELETE(req: NextRequest,  context: any) {
         );
 
         await Categories.deleteOne({ _id: category._id });
+
+        await Activity.create({
+            type: "category",
+            action: "deleted",
+            message: `A category deleted: "${category.name}"`,
+            timestamp: new Date(),
+        });
 
         return NextResponse.json({ message: "Category deleted successfully" }, { status: 200 });
     } catch (error) {

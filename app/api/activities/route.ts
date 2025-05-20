@@ -5,6 +5,6 @@ import { connectToDB } from "@/lib/MongoDB";
 
 export async function GET() {
     await connectToDB();
-    const activities = await Activity.find({}).sort({ timestamp: -1 }).limit(10);
+    const activities = await Activity.find({}).sort({ updatedAt: -1 }).limit(10);
     return NextResponse.json(activities);
 }

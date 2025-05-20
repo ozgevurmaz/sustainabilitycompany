@@ -1,4 +1,5 @@
 import { connectToDB } from "@/lib/MongoDB";
+import Activity from "@/models/activity";
 import Categories from "@/models/categories";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,6 +32,13 @@ export async function POST(req: NextRequest) {
 
     const category = await Categories.create({ name, postCount: 0 });
 
+    await Activity.create({
+      type: "category",
+      action: "added",
+      message: `A category added: "${category.name}"`,
+      timestamp: new Date(),
+    });
+
     return NextResponse.json(category, { status: 201 });
   } catch (error) {
     console.error("Error creating category:", error);
@@ -57,6 +65,13 @@ export async function PUT(req: NextRequest) {
     if (!category) {
       return NextResponse.json({ error: "Category not found." }, { status: 404 });
     }
+
+    await Activity.create({
+      type: "category",
+      action: "updated",
+      message: `A category updated: "${category.name}"`,
+      timestamp: new Date(),
+    });
 
     return NextResponse.json(category, { status: 200 });
   } catch (error) {

@@ -2,7 +2,7 @@ import { Schema, model, models } from "mongoose";
 
 const activitySchema = new Schema(
     {
-        type: { type: String, enum: ["blog", "service", "testimonial", "category"], required: true },
+        type: { type: String, enum: ["blog", "service", "testimonial", "category", "settings"], required: true },
         action: { type: String },
         message: { type: String },
     },

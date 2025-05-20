@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Navbar from "./Navbar";
 import AdminFooter from "./Footer";
+import { Toaster } from "../ui/toaster";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -17,6 +18,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <SessionProvider>
       <ProtectedAdmin>
         <Navbar />
+        <Toaster />
         {children}
         <AdminFooter />
       </ProtectedAdmin>

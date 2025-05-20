@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { setCachedBlogs } from '@/lib/cache';
+import { setCachedActivities, setCachedBlogs } from '@/lib/cache';
 import { BlogPostType } from '@/lib/types/types';
 import React from 'react'
 
@@ -49,7 +49,7 @@ export function PublishToggleDialog({
             const newListResponse = await fetch("/api/blog");
             const updatedList = await newListResponse.json();
             onToggleSuccess(updatedList);
-
+            setCachedActivities(null);
         } catch (error) {
             toast({
                 title: "Error",

@@ -13,7 +13,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { CategoryType } from "@/lib/types/types";
-import { setCachedCategories } from "@/lib/cache";
+import { setCachedActivities, setCachedCategories } from "@/lib/cache";
 
 interface AddCategoriesDialogProps {
     open: boolean;
@@ -58,6 +58,7 @@ export function AddCategoryDialog({ open, onClose, onAddCategory }: AddCategorie
         } catch (error:any) {
             setError(error.message || "Failed to add category");
         } finally {
+            setCachedActivities(null);
             setIsSubmitting(false);
         }
     };

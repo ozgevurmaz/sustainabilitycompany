@@ -45,7 +45,7 @@ import { AddCategoryDialog } from "./AddCategoryDialog";
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from "@tiptap/extension-underline";
-import { getCachedBlogs, getCachedCategories, setCachedBlogs } from "@/lib/cache";
+import { getCachedBlogs, getCachedCategories, setCachedActivities, setCachedBlogs } from "@/lib/cache";
 
 interface BlogFormProps {
   isEdit?: boolean;
@@ -327,6 +327,7 @@ export function BlogForm({
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save blog");
     } finally {
+      setCachedActivities(null);
       setIsSubmitting(false);
     }
   };
@@ -355,6 +356,7 @@ export function BlogForm({
           variant: "destructive",
         });
       } finally {
+        setCachedActivities(null);
         router.push("/admin/blog");
       }
     }

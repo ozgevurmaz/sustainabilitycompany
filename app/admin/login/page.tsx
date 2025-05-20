@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import bcrypt from "bcryptjs";
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -16,7 +19,7 @@ export default function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
+
     const res = await signIn("credentials", {
       email: form.email,
       password: form.password,
@@ -24,7 +27,8 @@ export default function AdminLogin() {
     });
 
     if (res?.error) {
-      setError("Invalid credentials");
+      console.log("Auth error:", res.error);
+      setError(res.error === "CredentialsSignin" ? "Invalid email or password" : res.error);
     } else {
       router.push("/admin");
     }
@@ -37,7 +41,7 @@ export default function AdminLogin() {
         {error && <p className="text-red-500 text-center">{error}</p>}
         <div className="mb-4">
           <label className="block text-gray-700">Email</label>
-          <input
+          <Input
             type="email"
             name="email"
             value={form.email}
@@ -48,7 +52,7 @@ export default function AdminLogin() {
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Password</label>
-          <input
+          <Input
             type="password"
             name="password"
             value={form.password}
@@ -57,9 +61,9 @@ export default function AdminLogin() {
             required
           />
         </div>
-        <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">
+        <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">
           Login
-        </button>
+        </Button>
       </form>
     </div>
   );

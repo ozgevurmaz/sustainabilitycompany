@@ -16,7 +16,7 @@ import {
 import { CategoryType } from "@/lib/types/types";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
-import { setCachedCategories } from "@/lib/cache";
+import { setCachedActivities, setCachedCategories } from "@/lib/cache";
 
 
 interface DeleteDialogProps {
@@ -56,7 +56,7 @@ export function DeleteCategoryDialog({
                     description: `"${category?.name}" has been deleted.`,
                 });
                 setIsDeleting(false)
-
+                setCachedActivities(null);
             } catch (error) {
                 toast({
                     title: "Error",

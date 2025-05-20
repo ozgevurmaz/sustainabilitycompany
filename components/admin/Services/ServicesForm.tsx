@@ -28,7 +28,7 @@ import { useParams, useRouter } from "next/navigation";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { serviceSchema } from "@/lib/Schema/services";
 import LoadingPage from "@/components/LoadingPage";
-import { getCachedServices, setCachedServices } from "@/lib/cache";
+import { getCachedServices, setCachedActivities, setCachedServices } from "@/lib/cache";
 
 interface ServicesFormProps {
   isEdit: boolean;
@@ -73,7 +73,7 @@ export default function ServicesForm({
       if (isEdit && slug) {
         try {
           setLoading(true);
-    
+
           const cachedServices = getCachedServices();
           if (cachedServices) {
             const found = cachedServices.find((s) => s.slug === slug);
@@ -85,7 +85,7 @@ export default function ServicesForm({
               return;
             }
           }
-    
+
           const response = await fetch(`/api/services/${slug}`);
           if (!response.ok) {
             throw new Error('Failed to fetch service data');
@@ -95,7 +95,7 @@ export default function ServicesForm({
           setService(serviceData);
           setImage(serviceData.imageUrl);
           setOriginalSlug(serviceData.slug);
-    
+
           if (cachedServices) {
             const isExisting = cachedServices.some((s) => s.slug === serviceData.slug);
             if (isExisting) {
@@ -109,7 +109,7 @@ export default function ServicesForm({
           } else {
             setCachedServices([serviceData]);
           }
-    
+
         } catch (err) {
           console.error('Error fetching service:', err);
           toast({
@@ -122,7 +122,7 @@ export default function ServicesForm({
         }
       }
     };
-    
+
 
     fetchServiceData();
   }, [isEdit, slug, toast]);
@@ -296,7 +296,7 @@ export default function ServicesForm({
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save service");
     } finally {
-
+      setCachedActivities(null);
       setIsSubmitting(false);
     }
   };
@@ -324,6 +324,7 @@ export default function ServicesForm({
           variant: "destructive",
         });
       } finally {
+        setCachedActivities(null);
         router.push("/admin/services")
       }
     };
