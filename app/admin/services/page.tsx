@@ -48,7 +48,7 @@ import { ICON_OPTIONS } from "@/lib/constant";
 import SecondHeader from "@/components/admin/SecondHeader";
 import DeleteServiceDialog from "@/components/admin/Services/DeleteServicesDialog";
 import { fetchServices } from "@/lib/actions";
-import { setCachedServices } from "@/lib/cache";
+import { getCachedServices, setCachedServices } from "@/lib/cache";
 
 export default function ServicesManagement() {
   const { data: session, status } = useSession();
@@ -77,6 +77,14 @@ export default function ServicesManagement() {
 
   // Fetch services data from the API
   const loadServices = async () => {
+
+    const cached = getCachedServices();
+    if (cached) {
+      setServices(cached);
+      setIsLoading(false);
+      return
+    }
+
     setIsLoading(true);
     try {
       const data = await fetchServices();

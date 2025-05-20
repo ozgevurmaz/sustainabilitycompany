@@ -82,6 +82,7 @@ export default function ServicesForm({
               setImage(found.imageUrl);
               setService(found);
               setOriginalSlug(found.slug);
+              setLoading(false)
               return;
             }
           }

@@ -47,8 +47,6 @@ import {
   Hash,
   FileText,
   Clock,
-  Plus,
-  Pen,
 } from "lucide-react";
 import { BlogPostType, CategoryType } from "@/lib/types/types";
 import SecondHeader from "@/components/admin/SecondHeader";
@@ -58,7 +56,7 @@ import Image from "next/image";
 import { PublishToggleDialog } from "@/components/admin/Blog/PublishToggleDialog";
 import { DeleteCategoryDialog } from "@/components/admin/Blog/DeleteCategory";
 import { getCachedBlogs, getCachedCategories } from "@/lib/cache";
-import { fetchBlogs } from "@/lib/actions";
+import { fetchBlogs, fetchCategories } from "@/lib/actions";
 
 export default function BlogManagement() {
   const { data: session, status } = useSession();
@@ -100,14 +98,11 @@ export default function BlogManagement() {
 
     if (cachedBlogs) {
       setBlogPosts(cachedBlogs);
+      setIsLoading(false)
       return;
     }
 
     try {
-      const response = await fetch('/api/blog');
-      if (!response.ok) {
-        throw new Error('Failed to fetch blog posts');
-      }
       const data = await fetchBlogs()
       setBlogPosts(data);
     } catch (error) {
@@ -129,21 +124,17 @@ export default function BlogManagement() {
 
       if (cachedCategories) {
         setCategories(cachedCategories)
+        setIsLoading(false)
         return
       }
 
-      const response = await fetch('/api/categories');
-      if (!response.ok) {
-        throw new Error('Failed to fetch categories');
-      }
-      const data = await response.json();
+      const data = await fetchCategories();
       setCategories(data);
 
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
-
 
   // Filter and search posts
   const filteredPosts = blogPosts.filter(post => {
